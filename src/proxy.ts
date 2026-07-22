@@ -1,13 +1,14 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Público: landing, sign-in, sign-up y webhooks (verifican su propia
-// firma). Todo lo demás exige sesión.
+// Público: landing, sign-in, sign-up, webhooks y crons (estos dos
+// verifican su propia firma/secret). Todo lo demás exige sesión.
 const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/api/cron(.*)",
 ]);
 
 const isApiRoute = createRouteMatcher(["/api(.*)", "/trpc(.*)"]);

@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:rls": "tsx scripts/apply-rls.ts",
     "db:verify": "tsx scripts/verify-db.ts",
-    "user:set-role": "tsx scripts/set-role.ts"
+    "user:set-role": "tsx scripts/set-role.ts",
+    "test:tokens": "tsx scripts/test-tokens.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.22",
