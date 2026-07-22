@@ -222,6 +222,21 @@ const es = {
   "common.cancel": "Cancelar",
   "common.save": "Guardar",
   "common.maintenance": "La generación está en mantenimiento, vuelve en un rato",
+
+  // Errores / 404
+  "error.title": "Algo salió mal",
+  "error.desc":
+    "Ocurrió un error inesperado. Tu trabajo está guardado, intenta de nuevo.",
+  "error.retry": "Reintentar",
+  "error.home": "Ir al inicio",
+  "notfound.title": "Página no encontrada",
+  "notfound.desc": "El enlace no existe o fue movido.",
+
+  // Footer / legal
+  "footer.rights": "Todos los derechos reservados.",
+  "footer.terms": "Términos y Condiciones",
+  "footer.privacy": "Política de Privacidad",
+  "footer.legal": "Al crear una cuenta aceptas nuestros Términos y la Política de Privacidad.",
 } as const;
 
 const en: Record<keyof typeof es, string> = {
@@ -431,6 +446,18 @@ const en: Record<keyof typeof es, string> = {
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.maintenance": "Generation is under maintenance, come back soon",
+
+  "error.title": "Something went wrong",
+  "error.desc": "An unexpected error occurred. Your work is saved, try again.",
+  "error.retry": "Try again",
+  "error.home": "Go home",
+  "notfound.title": "Page not found",
+  "notfound.desc": "This link doesn't exist or was moved.",
+
+  "footer.rights": "All rights reserved.",
+  "footer.terms": "Terms & Conditions",
+  "footer.privacy": "Privacy Policy",
+  "footer.legal": "By creating an account you accept our Terms and Privacy Policy.",
 };
 
 export type DictKey = keyof typeof es;

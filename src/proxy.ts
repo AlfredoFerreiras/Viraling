@@ -5,6 +5,8 @@ import { NextResponse, type NextRequest } from "next/server";
 // verifican su propia firma/secret). Todo lo demás exige sesión.
 const isPublicRoute = createRouteMatcher([
   "/",
+  "/terms",
+  "/privacy",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",

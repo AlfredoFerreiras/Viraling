@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { I18nProvider } from "@/components/i18n-provider";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { APP_NAME } from "@/lib/brand";
 import { getServerDict } from "@/lib/i18n/server";
@@ -43,6 +44,7 @@ export default async function RootLayout({
           <I18nProvider lang={lang} dict={dict}>
             <SiteHeader />
             {children}
+            <SiteFooter />
           </I18nProvider>
         </ClerkProvider>
       </body>

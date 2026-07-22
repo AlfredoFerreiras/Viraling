@@ -53,6 +53,9 @@ export default async function LandingPage() {
             </SignInButton>
           </div>
           <p className="mt-4 text-xs text-zinc-500">{dict["landing.free"]}</p>
+          <p className="mt-1 text-[11px] text-zinc-600">
+            {dict["footer.legal"]}
+          </p>
         </div>
       </section>
 
