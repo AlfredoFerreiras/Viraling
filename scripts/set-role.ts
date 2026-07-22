@@ -20,7 +20,10 @@ async function main() {
     );
     process.exit(1);
   }
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({
+    connectionString:
+      process.env.ADMIN_DATABASE_URL ?? process.env.DATABASE_URL,
+  });
   const res = await pool.query(
     "update users set role = $1 where email = $2 returning email, role",
     [role, email],

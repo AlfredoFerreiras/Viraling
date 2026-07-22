@@ -14,10 +14,11 @@ import ws from "ws";
 neonConfig.webSocketConstructor = ws;
 
 async function main() {
-  if (!process.env.DATABASE_URL) {
+  const url = process.env.ADMIN_DATABASE_URL ?? process.env.DATABASE_URL;
+  if (!url) {
     throw new Error("DATABASE_URL no está definida (revisa .env.local)");
   }
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ connectionString: url });
   const dir = join(process.cwd(), "drizzle", "rls");
   const files = readdirSync(dir)
     .filter((f) => f.endsWith(".sql"))

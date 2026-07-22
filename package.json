@@ -13,7 +13,8 @@
     "db:verify": "tsx scripts/verify-db.ts",
     "user:set-role": "tsx scripts/set-role.ts",
     "test:tokens": "tsx scripts/test-tokens.ts",
-    "test:ai": "tsx --conditions=react-server scripts/test-ai.ts"
+    "test:ai": "tsx --conditions=react-server scripts/test-ai.ts",
+    "test:security": "tsx scripts/test-security.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.113.0",
