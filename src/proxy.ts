@@ -71,7 +71,18 @@ export default clerkMiddleware(async (auth, request) => {
   }
 
   if (!isPublicRoute(request)) {
-    await auth.protect();
+    if (isApiRoute(request)) {
+      // Las rutas de API responden 401 JSON, nunca redirect a sign-in
+      const { userId } = await auth();
+      if (!userId) {
+        return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    } else {
+      await auth.protect();
+    }
   }
 
   const res = NextResponse.next();
