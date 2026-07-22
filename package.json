@@ -13,6 +13,7 @@
     "db:verify": "tsx scripts/verify-db.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.5.22",
     "@neondatabase/serverless": "^1.1.0",
     "drizzle-orm": "^0.45.2",
     "next": "16.2.11",
