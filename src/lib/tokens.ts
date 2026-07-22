@@ -107,6 +107,46 @@ export async function grantTokens(
   });
 }
 
+/**
+ * Ajuste manual del admin (bloque 8): acredita (amount > 0) o quita
+ * (amount < 0, sin bajar de 0) tokens con razón obligatoria que queda
+ * en el ledger. Misma transacción para balance + movimiento.
+ */
+export async function adminAdjustTokens(
+  userId: string,
+  amount: number,
+  reason: string,
+): Promise<{ newBalance: number }> {
+  if (!Number.isInteger(amount) || amount === 0) {
+    throw new Error("amount debe ser un entero distinto de 0");
+  }
+  if (!reason.trim()) {
+    throw new Error("La razón es obligatoria");
+  }
+
+  return withServiceContext(async (tx) => {
+    const updated = await tx
+      .update(users)
+      .set({
+        tokensBalance: sql`greatest(${users.tokensBalance} + ${amount}, 0)`,
+      })
+      .where(eq(users.id, userId))
+      .returning({ newBalance: users.tokensBalance });
+
+    if (!updated[0]) {
+      throw new Error(`Usuario ${userId} no existe`);
+    }
+
+    await tx.insert(tokenTransactions).values({
+      userId,
+      amount,
+      reason: `admin: ${reason.trim()}`,
+    });
+
+    return { newBalance: updated[0].newBalance };
+  });
+}
+
 /** Tokens por plan al reset mensual (sección 10). */
 export const MONTHLY_TOKENS: Record<string, number> = {
   free: 3,

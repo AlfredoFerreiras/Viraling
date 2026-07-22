@@ -6,6 +6,7 @@ import { AiOutputError, callClaudeJson, wrapUserData } from "@/lib/ai/claude";
 import { generatorSystem } from "@/lib/ai/prompts";
 import { getCurrentUser } from "@/lib/auth";
 import { enforceAiRateLimit } from "@/lib/rate-limit";
+import { isAiEnabled } from "@/lib/settings";
 import { parseBody } from "@/lib/validations";
 import { generateScriptInput, scriptOutputByType } from "@/lib/validations/ai";
 import { consumeTokens, grantTokens, InsufficientTokensError } from "@/lib/tokens";
@@ -20,6 +21,14 @@ export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  // Kill switch global (sección 7.3.7)
+  if (!(await isAiEnabled())) {
+    return NextResponse.json(
+      { error: "La generación está en mantenimiento, vuelve en un rato" },
+      { status: 503 },
+    );
   }
 
   // 2. Rate limit

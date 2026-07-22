@@ -74,6 +74,13 @@ export const scripts = pgTable("scripts", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+// CONFIG GLOBAL (kill switch de IA, umbrales) — solo admin
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
 // LEDGER DE TOKENS: nunca modificar balance sin registrar movimiento
 export const tokenTransactions = pgTable("token_transactions", {
   id: uuid("id").primaryKey().defaultRandom(),
