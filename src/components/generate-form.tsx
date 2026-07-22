@@ -32,7 +32,17 @@ export function GenerateForm({
   const [formats, setFormats] = useState<FormatItem[] | null>(null);
   const [formatId, setFormatId] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!generating) {
+      setStage(0);
+      return;
+    }
+    const timer = setInterval(() => setStage((s) => Math.min(s + 1, 2)), 6000);
+    return () => clearInterval(timer);
+  }, [generating]);
 
   const loadFormats = useCallback(async () => {
     setFormats(null);
@@ -167,7 +177,9 @@ export function GenerateForm({
           className="px-6"
         >
           {generating && <Spinner />}
-          {generating ? t("gen.generating") : `✨ ${t("gen.button")}`}
+          {generating
+            ? t(["gen.stage1", "gen.stage2", "gen.stage3"][stage] as "gen.stage1")
+            : `✨ ${t("gen.button")}`}
         </Button>
       </Card>
     </div>

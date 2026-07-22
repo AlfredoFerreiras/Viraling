@@ -5,6 +5,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
+import { APP_NAME } from "@/lib/brand";
 
 /**
  * PDF de guía de producción (bloque 7): mismo layout y colores por
@@ -145,7 +146,7 @@ export function ScriptPdf({ data }: { data: ScriptPdfData }) {
     <Document title={data.title}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.brand}>FormatBrain · Guía de producción</Text>
+          <Text style={styles.brand}>{APP_NAME} · Guía de producción</Text>
           <Text style={styles.title}>{data.title}</Text>
           <Text style={styles.meta}>
             {[
@@ -262,7 +263,7 @@ export function ScriptPdf({ data }: { data: ScriptPdfData }) {
         )}
 
         <Text style={styles.footer} fixed>
-          FormatBrain
+          {APP_NAME}
         </Text>
       </Page>
     </Document>

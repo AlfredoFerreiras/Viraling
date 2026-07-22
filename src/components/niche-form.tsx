@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { DictKey } from "@/lib/i18n/dictionaries";
 import { useI18n } from "./i18n-provider";
-import { Button, Card, Input, Label, Select, Spinner, Textarea } from "./ui";
+import { Button, Card, Input, Label, Select, Spinner, Textarea, cx } from "./ui";
 
 export type NicheFormValues = {
   name: string;
@@ -35,9 +36,68 @@ const EMPTY: NicheFormValues = {
   },
 };
 
+const SELL_OPTIONS: DictKey[] = [
+  "onb.sell.services",
+  "onb.sell.coaching",
+  "onb.sell.digital",
+  "onb.sell.physical",
+  "onb.sell.local",
+  "onb.sell.content",
+];
+
+const AUD_OPTIONS: DictKey[] = [
+  "onb.aud.entrepreneurs",
+  "onb.aud.creators",
+  "onb.aud.professionals",
+  "onb.aud.families",
+  "onb.aud.latinos",
+  "onb.aud.youth",
+];
+
+const TONE_OPTIONS: DictKey[] = [
+  "onb.tone.cercano",
+  "onb.tone.formal",
+  "onb.tone.callejero",
+  "onb.tone.tecnico",
+  "onb.tone.motivacional",
+];
+
+const FREQ_OPTIONS: { key: DictKey; value: number }[] = [
+  { key: "onb.freq.low", value: 2 },
+  { key: "onb.freq.mid", value: 4 },
+  { key: "onb.freq.high", value: 6 },
+  { key: "onb.freq.daily", value: 10 },
+];
+
+function Chip({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cx(
+        "cursor-pointer rounded-full border px-4 py-2 text-sm transition",
+        selected
+          ? "border-amber-400/70 bg-amber-400/15 font-semibold text-amber-300"
+          : "border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 /**
- * mode "wizard": onboarding paso a paso (8 preguntas de la sección 8.1).
- * mode "full": formulario completo para editar.
+ * mode "wizard": onboarding con selecciones (las 8 preguntas de la sección
+ * 8.1, pero en chips; solo nombre, tono y palabra CTA son obligatorios).
+ * mode "full": formulario completo para editar los textos guardados.
  */
 export function NicheForm({
   mode,
@@ -55,138 +115,26 @@ export function NicheForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Estado de selecciones del wizard
+  const [sellChoice, setSellChoice] = useState<string>("");
+  const [sellDetail, setSellDetail] = useState("");
+  const [audChoices, setAudChoices] = useState<string[]>([]);
+  const [audDetail, setAudDetail] = useState("");
+  const [toneChoice, setToneChoice] = useState<string>("");
+  const [freqValue, setFreqValue] = useState<number>(4);
+
   const bv = values.brandVoice;
   const setBv = (patch: Partial<NicheFormValues["brandVoice"]>) =>
     setValues((v) => ({ ...v, brandVoice: { ...v.brandVoice, ...patch } }));
 
-  // Paso 0 = nombre + idioma; pasos 1..8 = las 8 preguntas
-  const steps: { label: string; field: React.ReactNode; valid: boolean }[] = [
-    {
-      label: t("onb.name"),
-      valid: values.name.trim().length >= 2,
-      field: (
-        <div className="space-y-4">
-          <div>
-            <Label>{t("onb.name")}</Label>
-            <Input
-              value={values.name}
-              placeholder={t("onb.namePh")}
-              onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-              autoFocus
-            />
-          </div>
-          <div>
-            <Label>{t("onb.lang")}</Label>
-            <Select
-              value={values.language}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  language: e.target.value as "es" | "en",
-                }))
-              }
-            >
-              <option value="es">{t("onb.langEs")}</option>
-              <option value="en">{t("onb.langEn")}</option>
-            </Select>
-          </div>
-        </div>
-      ),
-    },
-    {
-      label: t("onb.q1"),
-      valid: bv.sells.trim().length > 0,
-      field: (
-        <Textarea
-          value={bv.sells}
-          onChange={(e) => setBv({ sells: e.target.value })}
-          autoFocus
-        />
-      ),
-    },
-    {
-      label: t("onb.q2"),
-      valid: bv.ideal_client.trim().length > 0,
-      field: (
-        <Textarea
-          value={bv.ideal_client}
-          onChange={(e) => setBv({ ideal_client: e.target.value })}
-        />
-      ),
-    },
-    {
-      label: t("onb.q3"),
-      valid: bv.transformation.trim().length > 0,
-      field: (
-        <Textarea
-          value={bv.transformation}
-          onChange={(e) => setBv({ transformation: e.target.value })}
-        />
-      ),
-    },
-    {
-      label: t("onb.q4"),
-      valid: bv.tone.trim().length > 0,
-      field: (
-        <Input value={bv.tone} onChange={(e) => setBv({ tone: e.target.value })} />
-      ),
-    },
-    {
-      label: t("onb.q5"),
-      valid: bv.never_say.trim().length > 0,
-      field: (
-        <Textarea
-          value={bv.never_say}
-          onChange={(e) => setBv({ never_say: e.target.value })}
-        />
-      ),
-    },
-    {
-      label: t("onb.q6"),
-      valid: bv.cta_word.trim().length > 0,
-      field: (
-        <Input
-          value={bv.cta_word}
-          placeholder={t("onb.q6Ph")}
-          onChange={(e) => setBv({ cta_word: e.target.value })}
-        />
-      ),
-    },
-    {
-      label: t("onb.q7"),
-      valid: bv.success_cases.trim().length > 0,
-      field: (
-        <Textarea
-          value={bv.success_cases}
-          onChange={(e) => setBv({ success_cases: e.target.value })}
-        />
-      ),
-    },
-    {
-      label: t("onb.q8"),
-      valid: bv.recordings_per_week >= 1,
-      field: (
-        <Input
-          type="number"
-          min={1}
-          max={30}
-          value={bv.recordings_per_week}
-          onChange={(e) =>
-            setBv({ recordings_per_week: Number(e.target.value) || 1 })
-          }
-        />
-      ),
-    },
-  ];
-
-  async function submit() {
+  async function submit(finalValues: NicheFormValues) {
     setSaving(true);
     setError(null);
     try {
       const res = await fetch(nicheId ? `/api/niches/${nicheId}` : "/api/niches", {
         method: nicheId ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(finalValues),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -202,21 +150,79 @@ export function NicheForm({
     }
   }
 
+  // ---------- Modo edición: formulario completo ----------
   if (mode === "full") {
+    const fields: { label: string; key: keyof NicheFormValues["brandVoice"] }[] = [
+      { label: t("onb.q1"), key: "sells" },
+      { label: t("onb.q2"), key: "ideal_client" },
+      { label: t("onb.q3"), key: "transformation" },
+      { label: t("onb.q4"), key: "tone" },
+      { label: t("onb.q5"), key: "never_say" },
+      { label: t("onb.q7"), key: "success_cases" },
+    ];
     return (
       <Card className="space-y-5">
-        {steps.map((s, i) => (
-          <div key={i}>
-            <Label>{s.label}</Label>
-            {s.field}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label>{t("onb.name")}</Label>
+            <Input
+              value={values.name}
+              onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+            />
+          </div>
+          <div>
+            <Label>{t("onb.lang")}</Label>
+            <Select
+              value={values.language}
+              onChange={(e) =>
+                setValues((v) => ({ ...v, language: e.target.value as "es" | "en" }))
+              }
+            >
+              <option value="es">{t("onb.langEs")}</option>
+              <option value="en">{t("onb.langEn")}</option>
+            </Select>
+          </div>
+        </div>
+        {fields.map((f) => (
+          <div key={f.key}>
+            <Label>{f.label}</Label>
+            <Textarea
+              value={bv[f.key] as string}
+              onChange={(e) => setBv({ [f.key]: e.target.value })}
+              className="min-h-16"
+            />
           </div>
         ))}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label>{t("onb.q6")}</Label>
+            <Input
+              value={bv.cta_word}
+              onChange={(e) => setBv({ cta_word: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>{t("onb.q8")}</Label>
+            <Input
+              type="number"
+              min={1}
+              max={30}
+              value={bv.recordings_per_week}
+              onChange={(e) =>
+                setBv({ recordings_per_week: Number(e.target.value) || 1 })
+              }
+            />
+          </div>
+        </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={() => router.back()}>
             {t("common.cancel")}
           </Button>
-          <Button onClick={submit} disabled={saving || steps.some((s) => !s.valid)}>
+          <Button
+            onClick={() => submit(values)}
+            disabled={saving || values.name.trim().length < 2}
+          >
             {saving && <Spinner />}
             {saving ? t("onb.saving") : t("common.save")}
           </Button>
@@ -225,8 +231,212 @@ export function NicheForm({
     );
   }
 
+  // ---------- Modo wizard: selecciones ----------
+  type Step = {
+    title: string;
+    optional?: boolean;
+    canNext: boolean;
+    body: React.ReactNode;
+  };
+
+  const steps: Step[] = [
+    // 0 · Nombre + idioma
+    {
+      title: t("onb.name"),
+      canNext: values.name.trim().length >= 2,
+      body: (
+        <div className="space-y-4">
+          <div>
+            <Label>{t("onb.name")}</Label>
+            <Input
+              value={values.name}
+              placeholder={t("onb.namePh")}
+              onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+              autoFocus
+            />
+          </div>
+          <div>
+            <Label>{t("onb.lang")}</Label>
+            <div className="flex gap-2">
+              {(["es", "en"] as const).map((l) => (
+                <Chip
+                  key={l}
+                  selected={values.language === l}
+                  onClick={() => setValues((v) => ({ ...v, language: l }))}
+                >
+                  {l === "es" ? t("onb.langEs") : t("onb.langEn")}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    // 1 · Qué vendes (selección + detalle opcional)
+    {
+      title: t("onb.q1"),
+      canNext: sellChoice !== "",
+      body: (
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {SELL_OPTIONS.map((key) => (
+              <Chip
+                key={key}
+                selected={sellChoice === t(key)}
+                onClick={() => setSellChoice(t(key))}
+              >
+                {t(key)}
+              </Chip>
+            ))}
+          </div>
+          <div>
+            <Label>{t("onb.detail")}</Label>
+            <Input
+              value={sellDetail}
+              onChange={(e) => setSellDetail(e.target.value)}
+              placeholder="Ej. reparación de crédito, tarjetas, funding"
+            />
+          </div>
+        </div>
+      ),
+    },
+    // 2 · Audiencia (multi, opcional)
+    {
+      title: t("onb.q2"),
+      optional: true,
+      canNext: true,
+      body: (
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {AUD_OPTIONS.map((key) => {
+              const label = t(key);
+              const selected = audChoices.includes(label);
+              return (
+                <Chip
+                  key={key}
+                  selected={selected}
+                  onClick={() =>
+                    setAudChoices((prev) =>
+                      selected
+                        ? prev.filter((a) => a !== label)
+                        : [...prev, label],
+                    )
+                  }
+                >
+                  {label}
+                </Chip>
+              );
+            })}
+          </div>
+          <div>
+            <Label>{t("onb.detail")}</Label>
+            <Input
+              value={audDetail}
+              onChange={(e) => setAudDetail(e.target.value)}
+            />
+          </div>
+        </div>
+      ),
+    },
+    // 3 · Tono (selección) + palabra CTA
+    {
+      title: t("onb.q4"),
+      canNext: toneChoice !== "" && bv.cta_word.trim().length > 0,
+      body: (
+        <div className="space-y-5">
+          <div className="flex flex-wrap gap-2">
+            {TONE_OPTIONS.map((key) => (
+              <Chip
+                key={key}
+                selected={toneChoice === t(key)}
+                onClick={() => setToneChoice(t(key))}
+              >
+                {t(key)}
+              </Chip>
+            ))}
+          </div>
+          <div>
+            <Label>{t("onb.q6")}</Label>
+            <Input
+              value={bv.cta_word}
+              placeholder={t("onb.q6Ph")}
+              onChange={(e) => setBv({ cta_word: e.target.value.toUpperCase() })}
+            />
+          </div>
+        </div>
+      ),
+    },
+    // 4 · Detalles opcionales (transformación, casos, qué no decir)
+    {
+      title: `${t("onb.q3").split("(")[0].trim()}`,
+      optional: true,
+      canNext: true,
+      body: (
+        <div className="space-y-4">
+          <div>
+            <Label>{t("onb.q3")}</Label>
+            <Textarea
+              value={bv.transformation}
+              onChange={(e) => setBv({ transformation: e.target.value })}
+              className="min-h-16"
+            />
+          </div>
+          <div>
+            <Label>{t("onb.q7")}</Label>
+            <Textarea
+              value={bv.success_cases}
+              onChange={(e) => setBv({ success_cases: e.target.value })}
+              className="min-h-16"
+              placeholder="Ej. +200 clientes, scores subidos 150 puntos"
+            />
+          </div>
+          <div>
+            <Label>{t("onb.q5")}</Label>
+            <Input
+              value={bv.never_say}
+              onChange={(e) => setBv({ never_say: e.target.value })}
+            />
+          </div>
+        </div>
+      ),
+    },
+    // 5 · Frecuencia (selección)
+    {
+      title: t("onb.q8"),
+      canNext: true,
+      body: (
+        <div className="flex flex-wrap gap-2">
+          {FREQ_OPTIONS.map((opt) => (
+            <Chip
+              key={opt.key}
+              selected={freqValue === opt.value}
+              onClick={() => setFreqValue(opt.value)}
+            >
+              {t(opt.key)}
+            </Chip>
+          ))}
+        </div>
+      ),
+    },
+  ];
+
   const current = steps[step];
   const isLast = step === steps.length - 1;
+
+  function buildFinalValues(): NicheFormValues {
+    return {
+      ...values,
+      brandVoice: {
+        ...bv,
+        sells: [sellChoice, sellDetail.trim()].filter(Boolean).join(": "),
+        ideal_client: [audChoices.join(", "), audDetail.trim()]
+          .filter(Boolean)
+          .join(". "),
+        tone: toneChoice,
+        recordings_per_week: freqValue,
+      },
+    };
+  }
 
   return (
     <Card className="space-y-6">
@@ -246,13 +456,20 @@ export function NicheForm({
       </div>
 
       <div>
-        <h2 className="mb-3 text-lg font-semibold">{current.label}</h2>
-        {current.field}
+        <div className="mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold">{current.title}</h2>
+          {current.optional && (
+            <span className="rounded-full bg-white/8 px-2 py-0.5 text-[10px] uppercase tracking-wide text-zinc-400">
+              {t("onb.optional")}
+            </span>
+          )}
+        </div>
+        {current.body}
       </div>
 
       {error && <p className="text-sm text-red-400">{error}</p>}
 
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         <Button
           variant="ghost"
           onClick={() => setStep((s) => Math.max(0, s - 1))}
@@ -260,16 +477,26 @@ export function NicheForm({
         >
           ← {t("onb.back")}
         </Button>
-        {isLast ? (
-          <Button onClick={submit} disabled={saving || steps.some((s) => !s.valid)}>
-            {saving && <Spinner />}
-            {saving ? t("onb.saving") : t("onb.save")}
-          </Button>
-        ) : (
-          <Button onClick={() => setStep((s) => s + 1)} disabled={!current.valid}>
-            {t("onb.next")} →
-          </Button>
-        )}
+        <div className="flex items-center gap-3">
+          {current.optional && !isLast && (
+            <button
+              onClick={() => setStep((s) => s + 1)}
+              className="cursor-pointer text-sm text-zinc-500 hover:text-zinc-300"
+            >
+              {t("onb.skip")}
+            </button>
+          )}
+          {isLast ? (
+            <Button onClick={() => submit(buildFinalValues())} disabled={saving}>
+              {saving && <Spinner />}
+              {saving ? t("onb.saving") : `✓ ${t("onb.save")}`}
+            </Button>
+          ) : (
+            <Button onClick={() => setStep((s) => s + 1)} disabled={!current.canNext}>
+              {t("onb.next")} →
+            </Button>
+          )}
+        </div>
       </div>
     </Card>
   );

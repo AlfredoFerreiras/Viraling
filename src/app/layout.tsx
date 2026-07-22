@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { I18nProvider } from "@/components/i18n-provider";
 import { SiteHeader } from "@/components/site-header";
+import { APP_NAME } from "@/lib/brand";
 import { getServerDict } from "@/lib/i18n/server";
 import "./globals.css";
 
@@ -17,7 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FormatBrain",
+  title: {
+    default: APP_NAME,
+    template: `%s · ${APP_NAME}`,
+  },
   description:
     "Guiones basados en formatos virales probados, adaptados a tu nicho",
 };

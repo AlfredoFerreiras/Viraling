@@ -5,6 +5,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { APP_NAME } from "@/lib/brand";
 import { getServerDict } from "@/lib/i18n/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveNiche, getUserNiches } from "@/lib/niches";
@@ -40,9 +41,10 @@ export async function SiteHeader() {
             className="flex shrink-0 items-center gap-1.5 text-sm font-bold tracking-tight"
           >
             <span className="flex size-6 items-center justify-center rounded-md bg-amber-400 font-black text-zinc-950">
-              F
+              V
             </span>
-            Format<span className="text-amber-400">Brain</span>
+            {APP_NAME.slice(0, 5)}
+            <span className="-ml-1.5 text-amber-400">{APP_NAME.slice(5)}</span>
           </Link>
           {links.length > 0 && <NavLinks items={links} />}
         </div>
