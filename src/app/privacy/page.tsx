@@ -15,7 +15,7 @@ export default async function PrivacyPage() {
         {
           h: "1. Qué datos recopilamos",
           p: [
-            "Cuenta: tu correo electrónico y datos de autenticación, gestionados por nuestro proveedor de identidad (Clerk).",
+            "Cuenta: tu correo electrónico y datos de autenticación, gestionados por el propio Servicio (contraseña almacenada solo como hash bcrypt).",
             "Contenido: los nichos, respuestas del cuestionario de marca, transcripts que pegas y los guiones generados con tu cuenta.",
             "Uso: movimientos de tokens (para tu balance y auditoría) y datos técnicos básicos como dirección IP para límites de uso y seguridad.",
           ],
@@ -29,14 +29,14 @@ export default async function PrivacyPage() {
         {
           h: "3. Proveedores que procesan datos",
           p: [
-            "Usamos proveedores de infraestructura estándar: Clerk (autenticación), Neon (base de datos), Anthropic (procesamiento de IA de los textos que envías a generar), Upstash (límites de uso), Cloudflare R2 (imágenes de referencia) y Vercel (hosting). Cada uno procesa solo lo necesario para su función.",
+            "Usamos proveedores de infraestructura estándar: Neon (base de datos), Anthropic (procesamiento de IA de los textos que envías a generar), Upstash (límites de uso), Cloudflare R2 (imágenes de referencia) y Vercel (hosting). Cada uno procesa solo lo necesario para su función.",
             "Los textos que envías al generador se procesan por el modelo de IA para producir tu guion; no se usan para entrenar modelos por parte del Servicio.",
           ],
         },
         {
           h: "4. Cookies",
           p: [
-            "Usamos cookies estrictamente funcionales: sesión de autenticación (Clerk), idioma de la interfaz y nicho activo. No usamos cookies de publicidad ni rastreadores de terceros.",
+            "Usamos cookies estrictamente funcionales: sesión de autenticación, idioma de la interfaz y nicho activo. No usamos cookies de publicidad ni rastreadores de terceros.",
           ],
         },
         {
@@ -54,7 +54,7 @@ export default async function PrivacyPage() {
         {
           h: "7. Seguridad",
           p: [
-            "Aplicamos medidas técnicas: cifrado en tránsito (HTTPS), aislamiento de datos por usuario a nivel de base de datos (Row Level Security), autenticación gestionada por Clerk y límites de uso por usuario e IP. Ningún sistema es 100% infalible, pero la seguridad es parte del diseño del Servicio.",
+            "Aplicamos medidas técnicas: cifrado en tránsito (HTTPS), aislamiento de datos por usuario a nivel de base de datos (Row Level Security), contraseñas con hash bcrypt y sesiones revocables y límites de uso por usuario e IP. Ningún sistema es 100% infalible, pero la seguridad es parte del diseño del Servicio.",
           ],
         },
         {
@@ -74,7 +74,7 @@ export default async function PrivacyPage() {
         {
           h: "1. What data we collect",
           p: [
-            "Account: your email and authentication data, managed by our identity provider (Clerk).",
+            "Account: your email and authentication data, managed by the Service itself (password stored only as a bcrypt hash).",
             "Content: your niches, brand questionnaire answers, transcripts you paste and the scripts generated with your account.",
             "Usage: token movements (for your balance and auditing) and basic technical data such as IP address for rate limiting and security.",
           ],
@@ -88,14 +88,14 @@ export default async function PrivacyPage() {
         {
           h: "3. Processors",
           p: [
-            "We use standard infrastructure providers: Clerk (authentication), Neon (database), Anthropic (AI processing of the texts you submit for generation), Upstash (rate limiting), Cloudflare R2 (reference images) and Vercel (hosting). Each processes only what's needed for its function.",
+            "We use standard infrastructure providers: Neon (database), Anthropic (AI processing of the texts you submit for generation), Upstash (rate limiting), Cloudflare R2 (reference images) and Vercel (hosting). Each processes only what's needed for its function.",
             "Texts you submit to the generator are processed by the AI model to produce your script; the Service does not use them to train models.",
           ],
         },
         {
           h: "4. Cookies",
           p: [
-            "We use strictly functional cookies: authentication session (Clerk), interface language and active niche. No advertising cookies or third-party trackers.",
+            "We use strictly functional cookies: authentication session, interface language and active niche. No advertising cookies or third-party trackers.",
           ],
         },
         {
@@ -113,7 +113,7 @@ export default async function PrivacyPage() {
         {
           h: "7. Security",
           p: [
-            "We apply technical measures: encryption in transit (HTTPS), per-user data isolation at the database level (Row Level Security), authentication managed by Clerk and per-user/IP rate limits. No system is 100% infallible, but security is part of the Service's design.",
+            "We apply technical measures: encryption in transit (HTTPS), per-user data isolation at the database level (Row Level Security), bcrypt-hashed passwords and revocable sessions and per-user/IP rate limits. No system is 100% infallible, but security is part of the Service's design.",
           ],
         },
         {

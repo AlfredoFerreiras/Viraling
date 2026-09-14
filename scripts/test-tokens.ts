@@ -34,8 +34,7 @@ async function main() {
     tx
       .insert(users)
       .values({
-        clerkId: `test_tokens_${process.pid}`,
-        email: "test-tokens@formatbrain.test",
+        email: `test-tokens-${process.pid}@formatbrain.test`,
       })
       .returning(),
   );

@@ -36,11 +36,11 @@ export async function withDbContext<T>(
 
 /**
  * Contexto para operaciones de sistema SIN sesión de usuario
- * (webhook de Clerk, crons). Corre con app.current_role = 'admin',
+ * (login, crons, scripts). Corre con app.current_role = 'admin',
  * que las policies reconocen como acceso total.
  *
  * Usar SOLO desde código de servidor que ya verificó su propia
- * autenticidad (firma del webhook, CRON_SECRET, etc.).
+ * autenticidad (login verificado con bcrypt, CRON_SECRET, etc.).
  */
 export async function withServiceContext<T>(
   fn: (tx: DbTransaction) => Promise<T>,

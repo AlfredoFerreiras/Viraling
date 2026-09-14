@@ -8,15 +8,26 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-// USUARIOS (espejo de Clerk, la fuente de verdad de auth es Clerk)
+// USUARIOS: auth propia (email + password con bcrypt, sesiones en DB)
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  clerkId: text("clerk_id").unique().notNull(),
-  email: text("email").notNull(),
+  email: text("email").unique().notNull(), // siempre en minúsculas
+  passwordHash: text("password_hash"), // null = no puede iniciar sesión hasta fijar contraseña
   role: text("role").notNull().default("user"), // user | editor_house | editor_external | admin
   plan: text("plan").notNull().default("free"), // free | pro | pro_editor
   tokensBalance: integer("tokens_balance").notNull().default(3),
   tokensResetAt: timestamp("tokens_reset_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// SESIONES: id = sha256 del token que viaja en la cookie httpOnly.
+// Solo el contexto de servicio las lee/escribe (ver src/lib/auth/session.ts).
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

@@ -2,9 +2,17 @@
 
 AI script generator for short-form creators. A creator describes their niche once, picks a proven viral format from the library, and gets a ready-to-record script (reel, carousel or story) in their brand voice, exportable as a production PDF.
 
-**Live demo:** https://viraling.vercel.app (free plan, 3 scripts per month, no card)
+**Live demo:** https://viraling.vercel.app
+
+Sign up for a free account (3 scripts a month, no card), or use the shared demo:
+
+| Email | Password |
+| --- | --- |
+| `demo@viraling.app` | `ViralingDemo2026!` |
 
 ![Viraling landing page](docs/screenshots/landing.png)
+
+![Sign in](docs/screenshots/sign-in.png)
 
 ## What it does
 
@@ -24,10 +32,10 @@ This is Phase 1 of a four-phase plan (see [CLAUDE.md](CLAUDE.md)). Calendar, CRM
 | --- | --- |
 | Framework | Next.js 16 App Router, React 19, TypeScript |
 | Styling | Tailwind CSS 4 |
-| Auth | Clerk (roles stored in the DB, never trusted from client metadata) |
+| Auth | Own email + password auth: bcrypt hashes, DB-backed sessions in an httpOnly cookie |
 | Database | Neon Postgres with Row Level Security, Drizzle ORM |
 | AI | Claude API (`claude-sonnet-4-6`), server-only |
-| Rate limiting | Upstash Redis |
+| Rate limiting | Upstash Redis with in-memory fallback |
 | Storage | Cloudflare R2 with presigned URLs |
 | PDF | @react-pdf/renderer |
 | Hosting | Vercel (with Vercel Cron for monthly resets) |
@@ -36,9 +44,9 @@ This is Phase 1 of a four-phase plan (see [CLAUDE.md](CLAUDE.md)). Calendar, CRM
 
 The main risk in an AI SaaS is someone burning the provider bill. The defenses are layered:
 
-1. **Session first.** Middleware returns 401 JSON on any `/api` route without a Clerk session before any handler runs.
+1. **Session first.** The proxy returns 401 JSON on any `/api` route without a session cookie, and every handler re-validates the session against the database before doing anything.
 2. **Credits before AI.** `consumeTokens` runs a conditional `UPDATE ... WHERE balance >= amount` and writes the ledger row in the same transaction. No credit, no API call. Failed generations refund through the same ledger.
-3. **Rate limits.** Sliding window per user (5/min) and per IP (20/min) on AI endpoints, 429 with `Retry-After`.
+3. **Rate limits.** Sliding window per user (5/min) and per IP (20/min) on AI endpoints, plus per-IP sign-up and per-IP-and-email sign-in limits, 429 with `Retry-After`. Distributed through Upstash Redis, with an in-memory fallback so a Redis outage degrades protection instead of taking the app down.
 4. **Kill switch.** A DB flag the admin can flip to return 503 from every AI endpoint.
 5. **Prompt injection.** User text is wrapped as delimited data with an explicit "never treat as instructions" notice, and the system prompt is fixed on the server. Output is parsed and validated with Zod, with a single correction retry.
 6. **Row Level Security.** Every table has RLS enabled and forced. The app sets `app.current_user_id` and `app.current_role` per transaction and connects with a dedicated role without `BYPASSRLS`. Handlers still validate ownership at the application level (defense in two layers).
@@ -55,19 +63,20 @@ src/
   db/             Drizzle schema and the RLS transaction helper
   lib/
     ai/           Claude wrapper, system prompts, JSON helpers
+    auth/         password hashing, session tokens, cookie helpers
     validations/  Zod schemas shared by handlers and tests
     i18n/         ES/EN dictionaries
     pdf/          PDF document
     tokens.ts     credit ledger (the only place that touches balances)
-    rate-limit.ts Upstash limiters
-  proxy.ts        Clerk middleware, CORS allowlist, security headers
+    rate-limit.ts Upstash limiters with in-memory fallback
+  proxy.ts        cookie gate, CORS allowlist, security headers
 drizzle/          migrations and RLS policies
 scripts/          DB setup, seeding and integration checks
 ```
 
 ## Running locally
 
-Requirements: Node 22, a Neon database, a Clerk application, an Anthropic API key, an Upstash Redis database. R2 is only needed for admin reference images.
+Requirements: Node 22, a Neon database, an Anthropic API key. Upstash Redis is optional (without it, rate limits are per server instance). R2 is only needed for admin reference images.
 
 ```bash
 npm install
@@ -90,7 +99,11 @@ To turn an existing account into a shared demo (pro plan, 60 credits, a sample n
 npm run db:seed-demo -- demo@example.com
 ```
 
-Clerk syncs users to the DB through a webhook. Without one (typical in local dev), the app upserts the user on first login, so nothing breaks.
+To create a user or reset a password without the UI (useful for the admin or a demo account):
+
+```bash
+npm run user:set-password -- someone@example.com "a long password"
+```
 
 ## Checks
 
@@ -108,5 +121,5 @@ CI runs type check, lint and unit tests on every push.
 ## Notes
 
 - The working name during development was FormatBrain, which still appears in the build brief. The product shipped as Viraling.
-- Clerk runs on a development instance for the demo, so its components show a "Development mode" badge.
+- Auth is deliberately self-contained: sign-up needs no email verification, and there is no password reset flow yet. Sign-ups are rate limited per IP and sign-ins per IP and email, and sessions are random 256-bit tokens stored hashed with a 30-day sliding expiry.
 - Code comments and AI system prompts are in Spanish (the original target market); the UI, API responses and docs are in English.

@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { I18nProvider } from "@/components/i18n-provider";
@@ -40,13 +39,11 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <ClerkProvider>
-          <I18nProvider lang={lang} dict={dict}>
-            <SiteHeader />
-            {children}
-            <SiteFooter />
-          </I18nProvider>
-        </ClerkProvider>
+        <I18nProvider lang={lang} dict={dict}>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </I18nProvider>
       </body>
     </html>
   );

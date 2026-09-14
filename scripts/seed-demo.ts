@@ -1,8 +1,8 @@
 /**
  * Prepares a shared demo account for portfolio visitors.
  *
- * Requirement: the account already exists in Clerk and has signed in at
- * least once (so its users row exists). Then this script:
+ * Requirement: the account exists (create it with
+ * npm run user:set-password -- email password). Then this script:
  *  1. Upgrades the plan to pro.
  *  2. Sets the credit balance to the given amount (default 60), recording
  *     the movement in the ledger.

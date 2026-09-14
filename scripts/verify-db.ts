@@ -17,6 +17,8 @@ const EXPECTED_TABLES = [
   "formats",
   "scripts",
   "token_transactions",
+  "sessions",
+  "app_settings",
 ];
 
 async function main() {

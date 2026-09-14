@@ -12,6 +12,23 @@ const es = {
   "nav.signUp": "Crear cuenta",
   "nav.tokens": "tokens",
 
+  // Auth
+  "auth.signInTitle": "Iniciar sesión",
+  "auth.signInSubtitle": "Entra con tu correo y contraseña.",
+  "auth.signUpTitle": "Crear cuenta",
+  "auth.signUpSubtitle": "Gratis, sin tarjeta. 3 guiones al mes para empezar.",
+  "auth.email": "Correo",
+  "auth.password": "Contraseña",
+  "auth.passwordHint": "Mínimo 8 caracteres.",
+  "auth.signInButton": "Entrar",
+  "auth.signUpButton": "Crear cuenta",
+  "auth.noAccount": "¿No tienes cuenta?",
+  "auth.haveAccount": "¿Ya tienes cuenta?",
+  "auth.invalid": "Correo o contraseña incorrectos.",
+  "auth.taken": "Ese correo ya está registrado.",
+  "auth.tooMany": "Demasiados intentos, espera un momento.",
+  "auth.signOut": "Salir",
+
   // Landing
   "landing.tagline": "Guiones virales para tu nicho",
   "landing.title1": "Formatos probados.",
@@ -249,6 +266,23 @@ const en: Record<keyof typeof es, string> = {
   "nav.signIn": "Sign in",
   "nav.signUp": "Sign up",
   "nav.tokens": "tokens",
+
+  // Auth
+  "auth.signInTitle": "Sign in",
+  "auth.signInSubtitle": "Enter with your email and password.",
+  "auth.signUpTitle": "Create your account",
+  "auth.signUpSubtitle": "Free, no card. 3 scripts a month to get started.",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.passwordHint": "At least 8 characters.",
+  "auth.signInButton": "Sign in",
+  "auth.signUpButton": "Create account",
+  "auth.noAccount": "No account yet?",
+  "auth.haveAccount": "Already have an account?",
+  "auth.invalid": "Wrong email or password.",
+  "auth.taken": "That email is already registered.",
+  "auth.tooMany": "Too many attempts, wait a moment.",
+  "auth.signOut": "Sign out",
 
   "landing.tagline": "Viral scripts for your niche",
   "landing.title1": "Proven formats.",

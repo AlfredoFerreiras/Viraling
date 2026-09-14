@@ -15,6 +15,20 @@
       "when": 1784747861708,
       "tag": "0001_late_roland_deschain",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789353169120,
+      "tag": "0002_auth_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789353170484,
+      "tag": "0003_drop_clerk_id",
+      "breakpoints": true
     }
   ]
 }

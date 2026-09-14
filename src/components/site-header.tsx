@@ -1,9 +1,3 @@
-import {
-  Show,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
 import Link from "next/link";
 import { APP_NAME } from "@/lib/brand";
 import { getServerDict } from "@/lib/i18n/server";
@@ -12,6 +6,7 @@ import { getActiveNiche, getUserNiches } from "@/lib/niches";
 import { LanguageSwitcher } from "./language-switcher";
 import { NavLinks } from "./nav-links";
 import { NicheSwitcher } from "./niche-switcher";
+import { UserMenu } from "./user-menu";
 
 export async function SiteHeader() {
   const { dict } = await getServerDict();
@@ -65,21 +60,21 @@ export async function SiteHeader() {
             </>
           )}
           <LanguageSwitcher />
-          <Show when="signed-out">
-            <SignInButton>
-              <button className="cursor-pointer text-sm text-zinc-300 hover:text-white">
+          {user ? (
+            <UserMenu email={user.email} />
+          ) : (
+            <>
+              <Link href="/sign-in" className="text-sm text-zinc-300 hover:text-white">
                 {dict["nav.signIn"]}
-              </button>
-            </SignInButton>
-            <SignUpButton>
-              <button className="cursor-pointer rounded-lg bg-amber-400 px-3.5 py-1.5 text-sm font-semibold text-zinc-950 hover:bg-amber-300">
+              </Link>
+              <Link
+                href="/sign-up"
+                className="rounded-lg bg-amber-400 px-3.5 py-1.5 text-sm font-semibold text-zinc-950 hover:bg-amber-300"
+              >
                 {dict["nav.signUp"]}
-              </button>
-            </SignUpButton>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -1,12 +1,12 @@
-import { SignUpButton, SignInButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui";
+import { getCurrentUser } from "@/lib/auth";
 import { getServerDict } from "@/lib/i18n/server";
 
 export default async function LandingPage() {
-  const { userId } = await auth();
-  if (userId) redirect("/dashboard");
+  const user = await getCurrentUser();
+  if (user) redirect("/dashboard");
 
   const { dict } = await getServerDict();
 
@@ -41,16 +41,18 @@ export default async function LandingPage() {
             {dict["landing.subtitle"]}
           </p>
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
-            <SignUpButton>
-              <button className="cursor-pointer rounded-xl bg-amber-400 px-7 py-3 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-8px_rgba(251,191,36,0.6)] transition hover:bg-amber-300">
-                {dict["landing.cta"]}
-              </button>
-            </SignUpButton>
-            <SignInButton>
-              <button className="cursor-pointer rounded-xl border border-white/10 bg-white/5 px-7 py-3 text-base text-zinc-200 transition hover:bg-white/10">
-                {dict["landing.cta2"]}
-              </button>
-            </SignInButton>
+            <Link
+              href="/sign-up"
+              className="rounded-xl bg-amber-400 px-7 py-3 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-8px_rgba(251,191,36,0.6)] transition hover:bg-amber-300"
+            >
+              {dict["landing.cta"]}
+            </Link>
+            <Link
+              href="/sign-in"
+              className="rounded-xl border border-white/10 bg-white/5 px-7 py-3 text-base text-zinc-200 transition hover:bg-white/10"
+            >
+              {dict["landing.cta2"]}
+            </Link>
           </div>
           <p className="mt-4 text-xs text-zinc-500">{dict["landing.free"]}</p>
           <p className="mt-1 text-[11px] text-zinc-600">

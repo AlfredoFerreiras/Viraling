@@ -34,8 +34,8 @@ async function main() {
     tx
       .insert(users)
       .values([
-        { clerkId: `sec_test_A_${process.pid}`, email: "sec-a@test.local" },
-        { clerkId: `sec_test_B_${process.pid}`, email: "sec-b@test.local" },
+        { email: `sec-a-${process.pid}@test.local` },
+        { email: `sec-b-${process.pid}@test.local` },
       ])
       .returning(),
   );

@@ -3,6 +3,8 @@
 # FormatBrain (nombre de trabajo) · Plataforma de contenido para creators
 
 > Nombre final del producto: **Viraling** (`src/lib/brand.ts`). Este documento conserva el nombre de trabajo. Estado: Fase 1 completa y desplegada en https://viraling.vercel.app. Ver README.md para setup y checks.
+>
+> Cambio de stack (2026-09): Clerk fue reemplazado por auth propia (email + password con bcrypt, sesiones en la tabla `sessions` con cookie httpOnly). Donde este documento dice "Clerk", léase `src/lib/auth`. Los roles siguen viviendo en `users.role`.
 
 Documento de arranque para Claude Code. Contiene la visión, los roles, las fases, el schema de base de datos, la arquitectura de seguridad, los prompts del sistema de IA y los flujos de trabajo completos.
 

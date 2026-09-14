@@ -18,17 +18,18 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:seed": "tsx scripts/seed-formats.ts",
-    "db:seed-demo": "tsx scripts/seed-demo.ts"
+    "db:seed-demo": "tsx scripts/seed-demo.ts",
+    "user:set-password": "tsx scripts/set-password.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.113.0",
     "@aws-sdk/client-s3": "^3.1093.0",
     "@aws-sdk/s3-request-presigner": "^3.1093.0",
-    "@clerk/nextjs": "^7.5.22",
     "@neondatabase/serverless": "^1.1.0",
     "@react-pdf/renderer": "^4.5.1",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
     "next": "16.2.11",
     "react": "19.2.4",
