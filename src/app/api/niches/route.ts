@@ -15,7 +15,7 @@ const NICHE_LIMITS: Record<string, number> = {
 
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const rows = await withDbContext({ userId: user.id, role: "user" }, (tx) =>
     tx
@@ -29,7 +29,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const parsed = await parseBody(req, nicheInput);
   if (!parsed.ok) return parsed.response;
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   if (!created) {
     return NextResponse.json(
-      { error: "Alcanzaste el límite de nichos de tu plan" },
+      { error: "You reached the niche limit of your plan" },
       { status: 403 },
     );
   }

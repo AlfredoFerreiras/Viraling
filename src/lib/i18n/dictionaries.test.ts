@@ -16,10 +16,10 @@ describe("dictionaries", () => {
     }
   });
 
-  it("normalizeLang falls back to es", () => {
+  it("normalizeLang falls back to en", () => {
     expect(normalizeLang("en")).toBe("en");
     expect(normalizeLang("es")).toBe("es");
-    expect(normalizeLang("fr")).toBe("es");
-    expect(normalizeLang(undefined)).toBe("es");
+    expect(normalizeLang("fr")).toBe("en");
+    expect(normalizeLang(undefined)).toBe("en");
   });
 });

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   try {
     evt = await verifyWebhook(req);
   } catch {
-    return new Response("Firma de webhook inválida", { status: 400 });
+    return new Response("Invalid webhook signature", { status: 400 });
   }
 
   switch (evt.type) {

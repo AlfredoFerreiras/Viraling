@@ -7,14 +7,14 @@ export type DbUser = typeof users.$inferSelect;
 
 export class UnauthorizedError extends Error {
   constructor() {
-    super("No autenticado");
+    super("Not authenticated");
     this.name = "UnauthorizedError";
   }
 }
 
 export class ForbiddenError extends Error {
   constructor() {
-    super("Sin permisos");
+    super("Forbidden");
     this.name = "ForbiddenError";
   }
 }

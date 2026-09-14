@@ -12,13 +12,13 @@ export async function adminGuard(): Promise<
   if (!user) {
     return {
       ok: false,
-      response: NextResponse.json({ error: "No autenticado" }, { status: 401 }),
+      response: NextResponse.json({ error: "Not authenticated" }, { status: 401 }),
     };
   }
   if (user.role !== "admin") {
     return {
       ok: false,
-      response: NextResponse.json({ error: "Sin permisos" }, { status: 403 }),
+      response: NextResponse.json({ error: "Forbidden" }, { status: 403 }),
     };
   }
   return { ok: true, admin: user };

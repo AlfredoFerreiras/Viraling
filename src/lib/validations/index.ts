@@ -24,7 +24,7 @@ export async function parseBody<T extends z.ZodType>(
     return {
       ok: false,
       response: NextResponse.json(
-        { error: "El body debe ser JSON válido" },
+        { error: "Body must be valid JSON" },
         { status: 400 },
       ),
     };
@@ -36,10 +36,10 @@ export async function parseBody<T extends z.ZodType>(
       ok: false,
       response: NextResponse.json(
         {
-          error: "Validación fallida",
-          detalles: parsed.error.issues.map((issue) => ({
-            campo: issue.path.join(".") || "(raíz)",
-            mensaje: issue.message,
+          error: "Validation failed",
+          details: parsed.error.issues.map((issue) => ({
+            field: issue.path.join(".") || "(root)",
+            message: issue.message,
           })),
         },
         { status: 400 },

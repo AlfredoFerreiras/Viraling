@@ -1,38 +1,38 @@
 /**
- * Prepara una cuenta demo para visitantes del portfolio.
+ * Prepares a shared demo account for portfolio visitors.
  *
- * Requisito: la cuenta ya existe en Clerk y entró al menos una vez a la
- * app (así existe su fila en users). Entonces este script:
- *  1. Sube el plan a pro.
- *  2. Ajusta el balance de tokens al cupo indicado (por defecto 60)
- *     registrando el movimiento en el ledger.
- *  3. Crea un nicho de ejemplo con brand_voice completo si la cuenta no
- *     tiene ninguno, para que aterrice directo en el dashboard.
+ * Requirement: the account already exists in Clerk and has signed in at
+ * least once (so its users row exists). Then this script:
+ *  1. Upgrades the plan to pro.
+ *  2. Sets the credit balance to the given amount (default 60), recording
+ *     the movement in the ledger.
+ *  3. Creates a sample niche with a full brand voice if the account has
+ *     none, so it lands directly on the dashboard.
  *
- * Idempotente: se puede correr de nuevo para "recargar" la demo.
+ * Idempotent: run it again to "recharge" the demo.
  *
- * Uso: npm run db:seed-demo -- demo@ejemplo.com [tokens]
+ * Usage: npm run db:seed-demo -- demo@example.com [credits]
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
 
 const DEMO_NICHE = {
-  name: "Reparación de crédito en español",
-  language: "es",
-  audience: "Latinos en Estados Unidos con score bajo que quieren comprar casa o carro",
-  offer: "Programa de reparación de crédito de 90 días con asesoría 1 a 1",
-  ctaWord: "CRÉDITO",
+  name: "Credit repair coaching",
+  language: "en",
+  audience: "People in the US with a low credit score who want to buy a home or a car",
+  offer: "90-day credit repair program with 1 on 1 coaching",
+  ctaWord: "CREDIT",
   brandVoice: {
-    sells: "Programa de reparación de crédito de 90 días con asesoría 1 a 1",
+    sells: "90-day credit repair program with 1 on 1 coaching",
     ideal_client:
-      "Latinos en Estados Unidos, entre 25 y 45 años, consumen contenido en español, tienen score entre 450 y 620",
+      "Adults in the US between 25 and 45, score between 450 and 620, tired of getting denied",
     transformation:
-      "De un score de 500 y rechazos en el banco a 700+ y aprobados para casa o carro",
-    tone: "cercano, directo, sin tecnicismos, como un amigo que sabe del tema",
-    never_say: "garantizado, milagro, borramos tu historial, dinero fácil",
-    cta_word: "CRÉDITO",
+      "From a 500 score and bank rejections to 700+ and approved for a home or a car",
+    tone: "warm, direct, no jargon, like a friend who knows the topic",
+    never_say: "guaranteed, miracle, we erase your history, easy money",
+    cta_word: "CREDIT",
     success_cases:
-      "Más de 300 clientes, promedio de +120 puntos en 90 días, María pasó de 480 a 715 en 4 meses",
+      "Over 300 clients, average +120 points in 90 days, Maria went from 480 to 715 in 4 months",
     recordings_per_week: 3,
   },
 };
@@ -40,12 +40,12 @@ const DEMO_NICHE = {
 async function main() {
   const [email, tokensArg] = process.argv.slice(2);
   if (!email) {
-    console.error("Uso: npm run db:seed-demo -- <email> [tokens]");
+    console.error("Usage: npm run db:seed-demo -- <email> [credits]");
     process.exit(1);
   }
   const targetTokens = Number(tokensArg ?? 60);
   if (!Number.isInteger(targetTokens) || targetTokens < 0) {
-    console.error("tokens debe ser un entero >= 0");
+    console.error("credits must be an integer >= 0");
     process.exit(1);
   }
 
@@ -63,7 +63,7 @@ async function main() {
   );
   if (!user) {
     console.error(
-      `No existe ${email} en la tabla users. Crea la cuenta en la app e inicia sesión una vez primero.`,
+      `${email} does not exist in the users table. Create the account in the app and sign in once first.`,
     );
     process.exit(1);
   }
@@ -80,11 +80,11 @@ async function main() {
     const { newBalance } = await adminAdjustTokens(
       user.id,
       delta,
-      "recarga de cuenta demo",
+      "demo account recharge",
     );
-    console.log(`  tokens ${user.tokensBalance} -> ${newBalance}`);
+    console.log(`  credits ${user.tokensBalance} -> ${newBalance}`);
   } else {
-    console.log(`  tokens ya en ${targetTokens}`);
+    console.log(`  credits already at ${targetTokens}`);
   }
 
   const existing = await withServiceContext((tx) =>
@@ -94,12 +94,12 @@ async function main() {
     await withServiceContext((tx) =>
       tx.insert(niches).values({ userId: user.id, ...DEMO_NICHE }),
     );
-    console.log(`  nicho creado: ${DEMO_NICHE.name}`);
+    console.log(`  niche created: ${DEMO_NICHE.name}`);
   } else {
-    console.log("  la cuenta ya tiene nichos, no se crea el de ejemplo");
+    console.log("  account already has niches, sample niche not created");
   }
 
-  console.log("\nDemo lista.");
+  console.log("\nDemo ready.");
   process.exit(0);
 }
 

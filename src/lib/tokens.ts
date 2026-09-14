@@ -12,7 +12,7 @@ import { tokenTransactions, users } from "../db/schema";
 
 export class InsufficientTokensError extends Error {
   constructor() {
-    super("No tienes tokens suficientes");
+    super("Not enough credits");
     this.name = "InsufficientTokensError";
   }
 }

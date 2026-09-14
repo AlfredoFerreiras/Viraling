@@ -20,13 +20,13 @@ export async function POST(req: NextRequest) {
   // 1. Sesión válida
   const user = await getCurrentUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   // Kill switch global (sección 7.3.7)
   if (!(await isAiEnabled())) {
     return NextResponse.json(
-      { error: "La generación está en mantenimiento, vuelve en un rato" },
+      { error: "Generation is under maintenance, please try again later" },
       { status: 503 },
     );
   }
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     },
   );
   if (!niche) {
-    return NextResponse.json({ error: "Nicho no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Niche not found" }, { status: 404 });
   }
   // RLS ya filtra formats a globales+propios; doble validación en app:
   if (
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     format.status !== "active" ||
     (format.ownerScope === "user" && format.userId !== user.id)
   ) {
-    return NextResponse.json({ error: "Formato no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Format not found" }, { status: 404 });
   }
 
   // 4. Token antes de llamar a Claude
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
     await grantTokens(user.id, 1, "refund");
     if (err instanceof AiOutputError) {
       return NextResponse.json(
-        { error: "La IA no devolvió un guion válido, tu token fue reembolsado" },
+        { error: "The AI did not return a valid script, your credit was refunded" },
         { status: 502 },
       );
     }

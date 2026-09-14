@@ -39,9 +39,9 @@ describe("brandVoiceSchema", () => {
 });
 
 describe("nicheInput", () => {
-  it("defaults language to es and requires a name of 2+ chars", () => {
+  it("defaults language to en and requires a name of 2+ chars", () => {
     const r = nicheInput.parse({ name: "Credit repair", brandVoice: voice });
-    expect(r.language).toBe("es");
+    expect(r.language).toBe("en");
     expect(nicheInput.safeParse({ name: "x", brandVoice: voice }).success).toBe(false);
   });
 

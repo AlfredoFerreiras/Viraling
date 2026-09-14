@@ -23,7 +23,7 @@ export type NicheFormValues = {
 
 const EMPTY: NicheFormValues = {
   name: "",
-  language: "es",
+  language: "en",
   brandVoice: {
     sells: "",
     ideal_client: "",
@@ -178,8 +178,8 @@ export function NicheForm({
                 setValues((v) => ({ ...v, language: e.target.value as "es" | "en" }))
               }
             >
-              <option value="es">{t("onb.langEs")}</option>
               <option value="en">{t("onb.langEn")}</option>
+              <option value="es">{t("onb.langEs")}</option>
             </Select>
           </div>
         </div>
@@ -258,7 +258,7 @@ export function NicheForm({
           <div>
             <Label>{t("onb.lang")}</Label>
             <div className="flex gap-2">
-              {(["es", "en"] as const).map((l) => (
+              {(["en", "es"] as const).map((l) => (
                 <Chip
                   key={l}
                   selected={values.language === l}

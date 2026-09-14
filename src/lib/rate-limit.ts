@@ -28,7 +28,7 @@ export function getClientIp(req: Request): string {
 export function rateLimitResponse(resetAt: number): NextResponse {
   const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
   return NextResponse.json(
-    { error: "Demasiadas solicitudes, intenta de nuevo en un momento" },
+    { error: "Too many requests, please try again in a moment" },
     { status: 429, headers: { "Retry-After": String(retryAfter) } },
   );
 }

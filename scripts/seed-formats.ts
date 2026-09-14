@@ -1,12 +1,12 @@
 /**
- * Seed de la biblioteca global de formatos.
+ * Seed for the global format library.
  *
- * Inserta un set inicial de formatos virales (reel, carrusel, story) con
- * skeletons escritos a mano, validados contra el mismo schema Zod que usa
- * el extractor de IA. Idempotente: si ya existe un formato global con el
- * mismo nombre y tipo, lo salta.
+ * Inserts a starter set of viral formats (reel, carousel, story) with
+ * hand-written skeletons, validated against the same Zod schema the AI
+ * extractor uses. Idempotent: a global format with the same name and
+ * content type is skipped.
  *
- * Uso: npm run db:seed
+ * Usage: npm run db:seed
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -22,52 +22,52 @@ type Seed = {
 
 const SEEDS: Seed[] = [
   {
-    name: "Funciona / No funciona",
+    name: "Works / Doesn't work",
     contentType: "reel",
     performanceNotes:
-      "Contraste binario que obliga a quedarse hasta el final para ver qué sí funciona. Muy fuerte en nichos de servicios y educación.",
+      "Binary contrast that forces viewers to stay until the end to see what actually works. Very strong in service and education niches.",
     skeleton: {
-      name: "Funciona / No funciona",
+      name: "Works / Doesn't work",
       structure: [
         {
           section: "hook",
-          purpose: "Nombrar el error común que la audiencia está cometiendo ahora mismo",
-          relative_duration: "0 a 3 segundos",
+          purpose: "Name the common mistake the audience is making right now",
+          relative_duration: "0 to 3 seconds",
         },
         {
-          section: "contexto",
-          purpose: "Explicar por qué casi todos hacen lo que NO funciona",
-          relative_duration: "3 a 10 segundos",
+          section: "context",
+          purpose: "Explain why almost everyone does the thing that does NOT work",
+          relative_duration: "3 to 10 seconds",
         },
         {
-          section: "problema",
-          purpose: "Mostrar la consecuencia concreta de seguir haciéndolo mal",
-          relative_duration: "10 a 18 segundos",
+          section: "problem",
+          purpose: "Show the concrete consequence of keeping the bad habit",
+          relative_duration: "10 to 18 seconds",
         },
         {
-          section: "solucion",
-          purpose: "Revelar lo que SÍ funciona con un paso accionable",
-          relative_duration: "18 a 30 segundos",
+          section: "solution",
+          purpose: "Reveal what DOES work with one actionable step",
+          relative_duration: "18 to 30 seconds",
         },
         {
           section: "cta",
-          purpose: "Pedir la palabra clave en comentarios para recibir el recurso",
-          relative_duration: "30 a 35 segundos",
+          purpose: "Ask for the keyword in the comments to receive the resource",
+          relative_duration: "30 to 35 seconds",
         },
       ],
-      hook_type: "Error común ('Deja de hacer X si quieres Y')",
-      pacing: "Rápido, frases cortas, corte cada 2 a 3 segundos",
+      hook_type: "Common mistake ('Stop doing X if you want Y')",
+      pacing: "Fast, short sentences, a cut every 2 to 3 seconds",
       visual_elements: [
-        "Texto en pantalla con ✗ en rojo para lo que no funciona",
-        "Texto en pantalla con ✓ en verde para lo que sí",
-        "Zoom in en la revelación de la solución",
+        "On-screen text with a red ✗ for what doesn't work",
+        "On-screen text with a green ✓ for what does",
+        "Zoom in on the reveal of the solution",
       ],
-      cta_type: "Comentario con palabra clave",
+      cta_type: "Keyword comment",
       replicable_rules: [
-        "El hook siempre nombra un comportamiento que la audiencia reconoce como propio",
-        "Nunca revelar la solución antes del segundo 18",
-        "Exactamente un consejo accionable en la solución, no una lista",
-        "El CTA pide una palabra concreta, no 'sígueme'",
+        "The hook always names a behavior the audience recognizes as their own",
+        "Never reveal the solution before second 18",
+        "Exactly one actionable tip in the solution, never a list",
+        "The CTA asks for a specific word, not 'follow me'",
       ],
     },
   },
@@ -75,284 +75,284 @@ const SEEDS: Seed[] = [
     name: "Tier List",
     contentType: "reel",
     performanceNotes:
-      "Ranking de opciones del nicho de peor a mejor. Genera comentarios porque la audiencia discute el orden.",
+      "Ranks the niche's options from worst to best. Drives comments because the audience argues about the order.",
     skeleton: {
       name: "Tier List",
       structure: [
         {
           section: "hook",
-          purpose: "Anunciar que se van a rankear las opciones más populares del nicho",
-          relative_duration: "0 a 3 segundos",
+          purpose: "Announce that the most popular options in the niche are about to be ranked",
+          relative_duration: "0 to 3 seconds",
         },
         {
-          section: "contexto",
-          purpose: "Explicar el criterio del ranking en una frase",
-          relative_duration: "3 a 7 segundos",
+          section: "context",
+          purpose: "State the ranking criterion in one sentence",
+          relative_duration: "3 to 7 seconds",
         },
         {
-          section: "problema",
-          purpose: "Rankear las opciones malas o sobrevaloradas (tiers C y B)",
-          relative_duration: "7 a 20 segundos",
+          section: "problem",
+          purpose: "Rank the weak or overrated options (tiers C and B)",
+          relative_duration: "7 to 20 seconds",
         },
         {
-          section: "solucion",
-          purpose: "Revelar la opción tier S y por qué",
-          relative_duration: "20 a 32 segundos",
+          section: "solution",
+          purpose: "Reveal the S tier option and why",
+          relative_duration: "20 to 32 seconds",
         },
         {
           section: "cta",
-          purpose: "Preguntar con qué tier no están de acuerdo y ofrecer la guía completa",
-          relative_duration: "32 a 38 segundos",
+          purpose: "Ask which tier they disagree with and offer the full guide",
+          relative_duration: "32 to 38 seconds",
         },
       ],
-      hook_type: "Promesa de ranking ('Rankeé todas las X y esto es lo que encontré')",
-      pacing: "Medio, una opción cada 3 a 4 segundos, aceleración hacia el tier S",
+      hook_type: "Ranking promise ('I ranked every X and here is what I found')",
+      pacing: "Medium, one option every 3 to 4 seconds, speeding up toward S tier",
       visual_elements: [
-        "Tabla de tiers en pantalla que se va llenando",
-        "Letras S, A, B, C con colores",
-        "Cada opción aparece como tarjeta al nombrarla",
+        "Tier table on screen that fills in as you go",
+        "Letters S, A, B, C in colors",
+        "Each option appears as a card when named",
       ],
-      cta_type: "Pregunta abierta + palabra clave",
+      cta_type: "Open question + keyword",
       replicable_rules: [
-        "Mínimo 4 opciones, máximo 7",
-        "Poner al menos una opción popular en tier bajo para provocar debate",
-        "El tier S siempre va al final y se justifica con un dato",
-        "El criterio del ranking se dice explícitamente",
+        "Minimum 4 options, maximum 7",
+        "Put at least one popular option in a low tier to spark debate",
+        "S tier always comes last and is justified with a fact",
+        "The ranking criterion is stated explicitly",
       ],
     },
   },
   {
-    name: "Historia de cliente antes / después",
+    name: "Client story before / after",
     contentType: "reel",
     performanceNotes:
-      "Caso real con números concretos. Convierte muy bien porque la prueba social es específica.",
+      "A real case with concrete numbers. Converts well because the social proof is specific.",
     skeleton: {
-      name: "Historia de cliente antes / después",
+      name: "Client story before / after",
       structure: [
         {
           section: "hook",
-          purpose: "Decir el resultado final con número y tiempo ('X pasó de A a B en N días')",
-          relative_duration: "0 a 3 segundos",
+          purpose: "State the final result with a number and a timeframe ('X went from A to B in N days')",
+          relative_duration: "0 to 3 seconds",
         },
         {
-          section: "contexto",
-          purpose: "Presentar al cliente y su situación inicial con la que la audiencia se identifica",
-          relative_duration: "3 a 10 segundos",
+          section: "context",
+          purpose: "Introduce the client and a starting situation the audience identifies with",
+          relative_duration: "3 to 10 seconds",
         },
         {
-          section: "problema",
-          purpose: "Qué había intentado antes y por qué no funcionó",
-          relative_duration: "10 a 17 segundos",
+          section: "problem",
+          purpose: "What they had tried before and why it failed",
+          relative_duration: "10 to 17 seconds",
         },
         {
-          section: "solucion",
-          purpose: "Los 2 o 3 cambios concretos que hicieron la diferencia",
-          relative_duration: "17 a 30 segundos",
+          section: "solution",
+          purpose: "The 2 or 3 concrete changes that made the difference",
+          relative_duration: "17 to 30 seconds",
         },
         {
           section: "cta",
-          purpose: "Invitar a quien esté en la situación inicial a comentar la palabra clave",
-          relative_duration: "30 a 35 segundos",
+          purpose: "Invite anyone in the starting situation to comment the keyword",
+          relative_duration: "30 to 35 seconds",
         },
       ],
-      hook_type: "Resultado con número ('De 480 a 720 en 90 días')",
-      pacing: "Narrativo, pausado en el antes, más rápido en la solución",
+      hook_type: "Result with a number ('From 480 to 720 in 90 days')",
+      pacing: "Narrative, slow in the before, faster in the solution",
       visual_elements: [
-        "Número del antes y después en pantalla, grande",
-        "Captura o testimonio del cliente (con permiso)",
-        "Lista de los cambios como bullets que aparecen uno a uno",
+        "Before and after numbers on screen, large",
+        "Screenshot or testimonial from the client (with permission)",
+        "The changes listed as bullets that appear one by one",
       ],
-      cta_type: "Identificación + palabra clave",
+      cta_type: "Identification + keyword",
       replicable_rules: [
-        "El hook lleva siempre un número de inicio, un número final y un plazo",
-        "El cliente tiene que ser reconocible como 'alguien como yo'",
-        "Nunca prometer el mismo resultado, mostrar el proceso",
-        "Máximo 3 cambios en la solución",
+        "The hook always carries a starting number, an ending number and a timeframe",
+        "The client must read as 'someone like me'",
+        "Never promise the same result, show the process",
+        "Maximum 3 changes in the solution",
       ],
     },
   },
   {
-    name: "5 errores que te están costando",
+    name: "5 mistakes costing you",
     contentType: "carousel",
     performanceNotes:
-      "Carrusel de errores con la solución en cada slide. Alto en guardados porque funciona como checklist.",
+      "Mistake per slide with the fix on the same slide. High save rate because it works as a checklist.",
     skeleton: {
-      name: "5 errores que te están costando",
+      name: "5 mistakes costing you",
       structure: [
         {
-          section: "portada",
-          purpose: "Título con el número de errores y lo que cuestan (dinero, tiempo, clientes)",
+          section: "cover",
+          purpose: "Title with the number of mistakes and what they cost (money, time, clients)",
           relative_duration: "slide 1",
         },
         {
-          section: "gancho",
-          purpose: "Afirmar que la mayoría comete al menos 3 de estos sin saberlo",
+          section: "hook",
+          purpose: "Claim that most people make at least 3 of these without knowing",
           relative_duration: "slide 2",
         },
         {
-          section: "errores",
-          purpose: "Un error por slide: nombre del error, por qué duele, qué hacer en su lugar",
-          relative_duration: "slides 3 a 7",
+          section: "mistakes",
+          purpose: "One mistake per slide: name it, why it hurts, what to do instead",
+          relative_duration: "slides 3 to 7",
         },
         {
-          section: "resumen",
-          purpose: "Checklist de los 5 en un solo slide para que lo guarden",
+          section: "summary",
+          purpose: "Checklist of all 5 on a single slide so people save it",
           relative_duration: "slide 8",
         },
         {
           section: "cta",
-          purpose: "Pedir guardar y comentar la palabra clave para recibir la versión completa",
+          purpose: "Ask to save and comment the keyword for the full version",
           relative_duration: "slide 9",
         },
       ],
-      hook_type: "Número + pérdida ('5 errores que te están costando clientes')",
-      pacing: "Un concepto por slide, máximo 25 palabras por slide",
+      hook_type: "Number + loss ('5 mistakes costing you clients')",
+      pacing: "One concept per slide, maximum 25 words per slide",
       visual_elements: [
-        "Número grande del error en cada slide",
-        "Icono ✗ en el error y ✓ en la corrección",
-        "Slide de resumen con checkboxes",
+        "Large mistake number on each slide",
+        "✗ icon on the mistake and ✓ on the fix",
+        "Summary slide with checkboxes",
       ],
-      cta_type: "Guardar + comentario con palabra clave",
+      cta_type: "Save + keyword comment",
       replicable_rules: [
-        "Exactamente 5 errores, ni más ni menos",
-        "Cada error lleva su corrección en el mismo slide",
-        "El slide de resumen es obligatorio: es lo que se guarda",
-        "La portada tiene máximo 8 palabras",
+        "Exactly 5 mistakes, no more, no less",
+        "Every mistake carries its fix on the same slide",
+        "The summary slide is mandatory: it is what gets saved",
+        "The cover has at most 8 words",
       ],
     },
   },
   {
-    name: "Mito vs realidad",
+    name: "Myth vs reality",
     contentType: "carousel",
     performanceNotes:
-      "Desmonta creencias del nicho. Genera comentarios de gente defendiendo el mito.",
+      "Debunks beliefs in the niche. Drives comments from people defending the myth.",
     skeleton: {
-      name: "Mito vs realidad",
+      name: "Myth vs reality",
       structure: [
         {
-          section: "portada",
-          purpose: "Enunciar el mito más popular del nicho como si fuera cierto",
+          section: "cover",
+          purpose: "State the most popular myth in the niche as if it were true",
           relative_duration: "slide 1",
         },
         {
-          section: "giro",
-          purpose: "Decir que es falso y que hay más mitos así",
+          section: "twist",
+          purpose: "Say it is false and that there are more myths like it",
           relative_duration: "slide 2",
         },
         {
-          section: "mitos",
-          purpose: "Un mito por slide: el mito en grande, la realidad debajo con un dato",
-          relative_duration: "slides 3 a 8",
+          section: "myths",
+          purpose: "One myth per slide: the myth large, the reality below with a fact",
+          relative_duration: "slides 3 to 8",
         },
         {
           section: "cta",
-          purpose: "Preguntar cuál creían y ofrecer el recurso con la palabra clave",
+          purpose: "Ask which one they believed and offer the resource with the keyword",
           relative_duration: "slide 9",
         },
       ],
-      hook_type: "Afirmación falsa presentada como verdad",
-      pacing: "Mito arriba, realidad abajo, mismo layout en todos los slides",
+      hook_type: "False statement presented as truth",
+      pacing: "Myth on top, reality below, same layout on every slide",
       visual_elements: [
-        "Mito tachado en la parte superior del slide",
-        "Realidad en color de marca debajo",
-        "Un dato o cifra por slide",
+        "Myth crossed out at the top of the slide",
+        "Reality in the brand color below",
+        "One data point or figure per slide",
       ],
-      cta_type: "Pregunta + palabra clave",
+      cta_type: "Question + keyword",
       replicable_rules: [
-        "El mito de la portada tiene que ser uno que la audiencia realmente crea",
-        "Cada realidad lleva un dato, no solo opinión",
-        "Entre 4 y 6 mitos",
-        "Nunca burlarse de quien cree el mito",
+        "The cover myth has to be one the audience actually believes",
+        "Every reality carries a fact, not just an opinion",
+        "Between 4 and 6 myths",
+        "Never mock the people who believe the myth",
       ],
     },
   },
   {
-    name: "Secuencia de venta en 4 stories",
+    name: "4-story sales sequence",
     contentType: "story",
     performanceNotes:
-      "Secuencia clásica que vende: conectar, probar, mostrar, pedir. Pensada para publicar el mismo día.",
+      "The classic selling sequence: connect, prove, show, ask. Meant to be posted the same day.",
     skeleton: {
-      name: "Secuencia de venta en 4 stories",
+      name: "4-story sales sequence",
       structure: [
         {
-          section: "conexion",
-          purpose: "Contar algo personal o del día a día que conecte con el dolor de la audiencia",
+          section: "connection",
+          purpose: "Share something personal or from daily life that connects with the audience's pain",
           relative_duration: "story 1",
         },
         {
-          section: "prueba",
-          purpose: "Mostrar un resultado, testimonio o captura que demuestre que funciona",
+          section: "proof",
+          purpose: "Show a result, testimonial or screenshot that proves it works",
           relative_duration: "story 2",
         },
         {
-          section: "producto",
-          purpose: "Explicar qué es la oferta y para quién es, en 2 frases",
+          section: "product",
+          purpose: "Explain what the offer is and who it is for, in 2 sentences",
           relative_duration: "story 3",
         },
         {
           section: "cta",
-          purpose: "Pedir una acción única: responder la story, sticker o link",
+          purpose: "Ask for a single action: reply to the story, sticker or link",
           relative_duration: "story 4",
         },
       ],
-      hook_type: "Confesión personal o momento cotidiano",
-      pacing: "Una idea por story, texto corto, cara a cámara o captura",
+      hook_type: "Personal confession or everyday moment",
+      pacing: "One idea per story, short text, face to camera or a screenshot",
       visual_elements: [
-        "Story 1 cara a cámara sin producción",
-        "Story 2 captura de resultado o testimonio",
-        "Story 4 con sticker de pregunta o link",
+        "Story 1 face to camera, no production",
+        "Story 2 screenshot of a result or testimonial",
+        "Story 4 with a question sticker or link",
       ],
-      cta_type: "Respuesta directa a la story",
+      cta_type: "Direct reply to the story",
       replicable_rules: [
-        "La primera story nunca vende",
-        "La prueba tiene que ser real y específica",
-        "Un solo CTA en la última story",
-        "Toda la secuencia se publica en el mismo bloque horario",
+        "The first story never sells",
+        "The proof has to be real and specific",
+        "A single CTA in the last story",
+        "The whole sequence goes out in the same time block",
       ],
     },
   },
   {
-    name: "Pregunta del seguidor",
+    name: "Follower question",
     contentType: "story",
     performanceNotes:
-      "Responder una pregunta real (o frecuente) de la audiencia. Genera más preguntas y conversación en DM.",
+      "Answer a real (or frequent) question from the audience. Generates more questions and DM conversations.",
     skeleton: {
-      name: "Pregunta del seguidor",
+      name: "Follower question",
       structure: [
         {
-          section: "conexion",
-          purpose: "Mostrar la pregunta recibida (captura o sticker) y decir que es muy común",
+          section: "connection",
+          purpose: "Show the question received (screenshot or sticker) and say it is very common",
           relative_duration: "story 1",
         },
         {
-          section: "prueba",
-          purpose: "Responder con la experiencia propia o de un cliente",
+          section: "proof",
+          purpose: "Answer with your own experience or a client's",
           relative_duration: "story 2",
         },
         {
-          section: "producto",
-          purpose: "Mencionar que esto es parte de lo que se trabaja en la oferta",
+          section: "product",
+          purpose: "Mention that this is part of what the offer works on",
           relative_duration: "story 3",
         },
         {
           section: "cta",
-          purpose: "Abrir sticker de preguntas para la siguiente ronda",
+          purpose: "Open a question sticker for the next round",
           relative_duration: "story 4",
         },
       ],
-      hook_type: "Pregunta real de la audiencia",
-      pacing: "Conversacional, como respuesta directa",
+      hook_type: "Real question from the audience",
+      pacing: "Conversational, like a direct reply",
       visual_elements: [
-        "Captura de la pregunta con nombre tapado",
-        "Cara a cámara respondiendo",
-        "Sticker de preguntas al final",
+        "Screenshot of the question with the name covered",
+        "Face to camera answering",
+        "Question sticker at the end",
       ],
-      cta_type: "Sticker de preguntas",
+      cta_type: "Question sticker",
       replicable_rules: [
-        "La pregunta se muestra literal, no parafraseada",
-        "La respuesta da valor completo, no la mitad",
-        "La mención de la oferta es de una frase, sin presión",
-        "Siempre cerrar pidiendo más preguntas",
+        "The question is shown verbatim, not paraphrased",
+        "The answer delivers full value, not half",
+        "The offer mention is one sentence, no pressure",
+        "Always close by asking for more questions",
       ],
     },
   },
@@ -374,7 +374,7 @@ async function main() {
     const parsed = skeletonOutput.safeParse(seed.skeleton);
     if (!parsed.success) {
       throw new Error(
-        `Skeleton inválido para "${seed.name}": ${JSON.stringify(parsed.error.issues)}`,
+        `Invalid skeleton for "${seed.name}": ${JSON.stringify(parsed.error.issues)}`,
       );
     }
 
@@ -409,11 +409,11 @@ async function main() {
       console.log(`  + ${seed.name} [${seed.contentType}]`);
     } else {
       skipped += 1;
-      console.log(`  = ${seed.name} [${seed.contentType}] (ya existe)`);
+      console.log(`  = ${seed.name} [${seed.contentType}] (already exists)`);
     }
   }
 
-  console.log(`\nSeed listo: ${inserted} insertados, ${skipped} ya existían.`);
+  console.log(`\nSeed done: ${inserted} inserted, ${skipped} already existed.`);
   process.exit(0);
 }
 

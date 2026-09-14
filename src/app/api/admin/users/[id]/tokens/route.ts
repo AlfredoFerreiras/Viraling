@@ -21,7 +21,7 @@ export async function POST(
 
   const idParsed = uuidSchema.safeParse((await params).id);
   if (!idParsed.success) {
-    return NextResponse.json({ error: "id inválido" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
 
   const parsed = await parseBody(req, bodySchema);

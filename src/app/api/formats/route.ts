@@ -13,13 +13,13 @@ const querySchema = z.object({
 /** Galería de formatos: globales + propios (la policy formats_read filtra). */
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const parsed = querySchema.safeParse({
     contentType: req.nextUrl.searchParams.get("contentType") ?? undefined,
   });
   if (!parsed.success) {
-    return NextResponse.json({ error: "contentType inválido" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid contentType" }, { status: 400 });
   }
   const { contentType } = parsed.data;
 

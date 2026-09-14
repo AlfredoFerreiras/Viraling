@@ -23,7 +23,7 @@ const client = new Anthropic({
 });
 
 export class AiOutputError extends Error {
-  constructor(message = "Claude no devolvió JSON válido tras el reintento") {
+  constructor(message = "Claude did not return valid JSON after the retry") {
     super(message);
     this.name = "AiOutputError";
   }

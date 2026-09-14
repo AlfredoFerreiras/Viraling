@@ -14,7 +14,7 @@ AI script generator for short-form creators. A creator describes their niche onc
 - **PDF export.** Server-side production guide with timings, on-screen text and covers.
 - **Token economy.** Every generation debits one credit inside a transaction before the AI call. Free plan resets monthly by cron.
 - **Admin panel.** User count, AI usage, global kill switch, format CRUD with reference images on R2, manual credit adjustments with an audit trail.
-- **Bilingual UI** (Spanish and English) with a cookie-based switch.
+- **Bilingual UI.** English by default, Spanish with one click, and scripts are generated in the language of each niche.
 
 This is Phase 1 of a four-phase plan (see [CLAUDE.md](CLAUDE.md)). Calendar, CRM, editing service and cover editor are out of scope for this release.
 
@@ -109,4 +109,4 @@ CI runs type check, lint and unit tests on every push.
 
 - The working name during development was FormatBrain, which still appears in the build brief. The product shipped as Viraling.
 - Clerk runs on a development instance for the demo, so its components show a "Development mode" badge.
-- Code comments are in Spanish; the UI is bilingual.
+- Code comments and AI system prompts are in Spanish (the original target market); the UI, API responses and docs are in English.

@@ -18,11 +18,11 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const idParsed = uuidSchema.safeParse((await params).id);
   if (!idParsed.success) {
-    return NextResponse.json({ error: "id inválido" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
 
   const [row] = await withDbContext({ userId: user.id, role: "user" }, (tx) =>
@@ -39,7 +39,7 @@ export async function GET(
       .limit(1),
   );
   if (!row) {
-    return NextResponse.json({ error: "Guion no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Script not found" }, { status: 404 });
   }
 
   const { dict } = await getServerDict();

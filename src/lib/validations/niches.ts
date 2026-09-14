@@ -13,7 +13,7 @@ export const brandVoiceSchema = z.object({
 
 export const nicheInput = z.object({
   name: z.string().min(2).max(120),
-  language: z.enum(["es", "en"]).default("es"),
+  language: z.enum(["es", "en"]).default("en"),
   audience: z.string().max(1000).optional(),
   offer: z.string().max(1000).optional(),
   brandVoice: brandVoiceSchema,

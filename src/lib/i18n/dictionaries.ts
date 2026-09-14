@@ -221,7 +221,7 @@ const es = {
   "common.error": "Algo salió mal, intenta de nuevo",
   "common.cancel": "Cancelar",
   "common.save": "Guardar",
-  "common.maintenance": "La generación está en mantenimiento, vuelve en un rato",
+  "common.maintenance": "Generation is under maintenance, please try again later",
 
   // Errores / 404
   "error.title": "Algo salió mal",
@@ -466,9 +466,9 @@ export type Dict = Record<DictKey, string>;
 const dictionaries: Record<Lang, Dict> = { es, en };
 
 export function getDict(lang: Lang): Dict {
-  return dictionaries[lang] ?? dictionaries.es;
+  return dictionaries[lang] ?? dictionaries.en;
 }
 
 export function normalizeLang(value: string | undefined): Lang {
-  return value === "en" ? "en" : "es";
+  return value === "es" ? "es" : "en";
 }

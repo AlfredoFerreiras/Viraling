@@ -17,10 +17,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const id = await validId((await params).id);
-  if (!id) return NextResponse.json({ error: "id inválido" }, { status: 400 });
+  if (!id) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
 
   const parsed = await parseBody(req, nicheUpdateInput);
   if (!parsed.ok) return parsed.response;
@@ -45,7 +45,7 @@ export async function PATCH(
   );
 
   if (!updated) {
-    return NextResponse.json({ error: "Nicho no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Niche not found" }, { status: 404 });
   }
   return NextResponse.json({ niche: updated });
 }
@@ -55,10 +55,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   const id = await validId((await params).id);
-  if (!id) return NextResponse.json({ error: "id inválido" }, { status: 400 });
+  if (!id) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
 
   const deleted = await withDbContext(
     { userId: user.id, role: "user" },
@@ -78,7 +78,7 @@ export async function DELETE(
   );
 
   if (deleted.length === 0) {
-    return NextResponse.json({ error: "Nicho no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Niche not found" }, { status: 404 });
   }
   return NextResponse.json({ ok: true });
 }

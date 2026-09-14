@@ -25,7 +25,7 @@ export async function PATCH(
 
   const idParsed = uuidSchema.safeParse((await params).id);
   if (!idParsed.success) {
-    return NextResponse.json({ error: "id inválido" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
 
   const parsed = await parseBody(req, patchSchema);
@@ -53,7 +53,7 @@ export async function PATCH(
   );
 
   if (!updated) {
-    return NextResponse.json({ error: "Formato no encontrado" }, { status: 404 });
+    return NextResponse.json({ error: "Format not found" }, { status: 404 });
   }
   return NextResponse.json({ format: updated });
 }

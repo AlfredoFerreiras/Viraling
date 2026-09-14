@@ -66,7 +66,7 @@ function applySecurityHeaders(res: NextResponse): void {
 
 export default clerkMiddleware(async (auth, request) => {
   if (isApiRoute(request) && corsViolation(request)) {
-    return new NextResponse(JSON.stringify({ error: "Origin no permitido" }), {
+    return new NextResponse(JSON.stringify({ error: "Origin not allowed" }), {
       status: 403,
       headers: { "Content-Type": "application/json" },
     });
@@ -77,7 +77,7 @@ export default clerkMiddleware(async (auth, request) => {
       // Las rutas de API responden 401 JSON, nunca redirect a sign-in
       const { userId } = await auth();
       if (!userId) {
-        return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
+        return new NextResponse(JSON.stringify({ error: "Not authenticated" }), {
           status: 401,
           headers: { "Content-Type": "application/json" },
         });

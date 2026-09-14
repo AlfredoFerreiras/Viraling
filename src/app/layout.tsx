@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: `%s · ${APP_NAME}`,
   },
   description:
-    "Guiones basados en formatos virales probados, adaptados a tu nicho",
+    "Scripts built on proven viral formats, adapted to your niche",
 };
 
 export default async function RootLayout({
