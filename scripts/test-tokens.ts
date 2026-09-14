@@ -16,7 +16,6 @@ async function main() {
   const ws = (await import("ws")).default;
   neonConfig.webSocketConstructor = ws;
 
-  const { db } = await import("../src/db/index");
   const { users, tokenTransactions } = await import("../src/db/schema");
   const { consumeTokens, grantTokens, InsufficientTokensError } = await import(
     "../src/lib/tokens"

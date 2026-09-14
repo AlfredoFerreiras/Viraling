@@ -49,8 +49,16 @@ export function GlobalFormatManager() {
   }, []);
 
   useEffect(() => {
-    loadList();
-  }, [loadList]);
+    let cancelled = false;
+    fetch("/api/admin/formats")
+      .then(async (res) => {
+        if (res.ok && !cancelled) setList((await res.json()).formats);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function extract() {
     setBusy("extract");

@@ -4,13 +4,20 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useI18n } from "./i18n-provider";
 
+const LANG_COOKIE = "fb_lang";
+const ONE_YEAR = 60 * 60 * 24 * 365;
+
+function writeLangCookie(lang: "es" | "en"): void {
+  document.cookie = `${LANG_COOKIE}=${lang}; path=/; max-age=${ONE_YEAR}; samesite=lax`;
+}
+
 export function LanguageSwitcher() {
   const { lang } = useI18n();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   function setLang(next: "es" | "en") {
-    document.cookie = `fb_lang=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+    writeLangCookie(next);
     startTransition(() => router.refresh());
   }
 

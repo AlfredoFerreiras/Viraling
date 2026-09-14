@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "./i18n-provider";
 import { Badge, Button, Card, Label, Select, Spinner, cx } from "./ui";
 
@@ -29,39 +29,47 @@ export function GenerateForm({
   const router = useRouter();
   const [nicheId, setNicheId] = useState(activeNicheId);
   const [contentType, setContentType] = useState<(typeof TYPES)[number]>("reel");
-  const [formats, setFormats] = useState<FormatItem[] | null>(null);
+  // Formats are keyed by the content type they were loaded for, so a
+  // type change shows the loading state without a synchronous reset.
+  const [loaded, setLoaded] = useState<{
+    type: string;
+    items: FormatItem[];
+  } | null>(null);
+  const formats = loaded?.type === contentType ? loaded.items : null;
   const [formatId, setFormatId] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!generating) {
-      setStage(0);
-      return;
-    }
+    if (!generating) return;
     const timer = setInterval(() => setStage((s) => Math.min(s + 1, 2)), 6000);
     return () => clearInterval(timer);
   }, [generating]);
 
-  const loadFormats = useCallback(async () => {
-    setFormats(null);
-    setFormatId(null);
-    const res = await fetch(`/api/formats?contentType=${contentType}`);
-    if (res.ok) {
-      const data = await res.json();
-      setFormats(data.formats);
-    } else {
-      setFormats([]);
-    }
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/formats?contentType=${contentType}`)
+      .then(async (res) => {
+        const items: FormatItem[] = res.ok ? (await res.json()).formats : [];
+        if (!cancelled) setLoaded({ type: contentType, items });
+      })
+      .catch(() => {
+        if (!cancelled) setLoaded({ type: contentType, items: [] });
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [contentType]);
 
-  useEffect(() => {
-    loadFormats();
-  }, [loadFormats]);
+  function selectType(ty: (typeof TYPES)[number]) {
+    setContentType(ty);
+    setFormatId(null);
+  }
 
   async function generate() {
     if (!formatId) return;
+    setStage(0);
     setGenerating(true);
     setError(null);
     try {
@@ -103,7 +111,7 @@ export function GenerateForm({
             {TYPES.map((ty) => (
               <button
                 key={ty}
-                onClick={() => setContentType(ty)}
+                onClick={() => selectType(ty)}
                 className={cx(
                   "flex-1 cursor-pointer rounded-lg border px-3 py-2 text-sm transition",
                   contentType === ty

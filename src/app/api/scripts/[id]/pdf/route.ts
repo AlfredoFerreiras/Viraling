@@ -2,7 +2,6 @@ import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
 import { and, eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { createElement } from "react";
-import { z } from "zod";
 import { withDbContext } from "@/db/context";
 import { formats, niches, scripts } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
