@@ -17,7 +17,8 @@
     "test:security": "tsx scripts/test-security.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:seed": "tsx scripts/seed-formats.ts"
+    "db:seed": "tsx scripts/seed-formats.ts",
+    "db:seed-demo": "tsx scripts/seed-demo.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.113.0",

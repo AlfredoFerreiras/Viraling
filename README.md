@@ -84,6 +84,12 @@ To promote your account to admin after signing up:
 npm run user:set-role -- <your-email> admin
 ```
 
+To turn an existing account into a shared demo (pro plan, 60 credits, a sample niche with full brand voice):
+
+```bash
+npm run db:seed-demo -- demo@example.com
+```
+
 Clerk syncs users to the DB through a webhook. Without one (typical in local dev), the app upserts the user on first login, so nothing breaks.
 
 ## Checks
