@@ -3,11 +3,11 @@ import { withDbContext, withServiceContext } from "../db/context";
 import { tokenTransactions, users } from "../db/schema";
 
 /**
- * REGLA DURA (sección 7.3): users.tokens_balance NUNCA se actualiza
- * directo en ningún otro lugar del código. Todo débito pasa por
- * consumeTokens y todo crédito por grantTokens, y ambos registran el
- * movimiento en token_transactions (ledger auditable) en LA MISMA
- * transacción que modifica el balance.
+ * HARD RULE (section 7.3): users.tokens_balance is NEVER updated
+ * directly anywhere else in the code. Every debit goes through
+ * consumeTokens and every credit through grantTokens, and both record the
+ * movement in token_transactions (auditable ledger) in THE SAME
+ * transaction that changes the balance.
  */
 
 export class InsufficientTokensError extends Error {
@@ -25,13 +25,13 @@ export type GrantReason =
   | "refund";
 
 /**
- * Descuenta `amount` tokens del usuario en UNA transacción:
- * verifica balance suficiente, descuenta e inserta el movimiento
- * negativo en el ledger. Si no alcanza, lanza InsufficientTokensError
- * y nada se modifica (la transacción entera se revierte).
+ * Debits `amount` tokens from the user in ONE transaction:
+ * checks the balance is sufficient, debits it and inserts the negative
+ * movement in the ledger. If it is not enough, it throws
+ * InsufficientTokensError and nothing changes (the whole transaction rolls back).
  *
- * Corre en el contexto RLS del propio usuario: solo puede tocar su
- * fila de users y sus filas del ledger.
+ * Runs in the RLS context of the user itself: it can only touch their
+ * own users row and their own ledger rows.
  */
 export async function consumeTokens(
   userId: string,
@@ -40,12 +40,12 @@ export async function consumeTokens(
   refId?: string,
 ): Promise<{ newBalance: number }> {
   if (!Number.isInteger(amount) || amount <= 0) {
-    throw new Error("amount debe ser un entero positivo");
+    throw new Error("amount must be a positive integer");
   }
 
   return withDbContext({ userId, role: "user" }, async (tx) => {
-    // Update condicional: solo descuenta si el balance alcanza.
-    // El WHERE con gte evita la carrera de dos requests simultáneos.
+    // Conditional update: only debits if the balance is enough.
+    // The WHERE with gte avoids the race between two simultaneous requests.
     const updated = await tx
       .update(users)
       .set({ tokensBalance: sql`${users.tokensBalance} - ${amount}` })
@@ -69,11 +69,11 @@ export async function consumeTokens(
 
 /**
  * Acredita `amount` tokens (compras, reset mensual, admin, reembolso)
- * en UNA transacción: suma al balance e inserta el movimiento positivo
- * en el ledger.
+ * in ONE transaction: adds to the balance and inserts the positive
+ * movement in the ledger.
  *
- * Corre en contexto de servicio porque los créditos los origina el
- * sistema (webhook de Stripe, cron, panel admin), no el usuario.
+ * Runs in the service context because credits originate in the
+ * system (Stripe webhook, cron, admin panel), not in the user.
  */
 export async function grantTokens(
   userId: string,
@@ -82,7 +82,7 @@ export async function grantTokens(
   refId?: string,
 ): Promise<{ newBalance: number }> {
   if (!Number.isInteger(amount) || amount <= 0) {
-    throw new Error("amount debe ser un entero positivo");
+    throw new Error("amount must be a positive integer");
   }
 
   return withServiceContext(async (tx) => {
@@ -93,7 +93,7 @@ export async function grantTokens(
       .returning({ newBalance: users.tokensBalance });
 
     if (!updated[0]) {
-      throw new Error(`Usuario ${userId} no existe`);
+      throw new Error(`User ${userId} does not exist`);
     }
 
     await tx.insert(tokenTransactions).values({
@@ -108,9 +108,9 @@ export async function grantTokens(
 }
 
 /**
- * Ajuste manual del admin (bloque 8): acredita (amount > 0) o quita
- * (amount < 0, sin bajar de 0) tokens con razón obligatoria que queda
- * en el ledger. Misma transacción para balance + movimiento.
+ * Manual admin adjustment (block 8): credits (amount > 0) or removes
+ * (amount < 0, never below 0) tokens with a mandatory reason that stays
+ * in the ledger. Same transaction for balance + movement.
  */
 export async function adminAdjustTokens(
   userId: string,
@@ -118,10 +118,10 @@ export async function adminAdjustTokens(
   reason: string,
 ): Promise<{ newBalance: number }> {
   if (!Number.isInteger(amount) || amount === 0) {
-    throw new Error("amount debe ser un entero distinto de 0");
+    throw new Error("amount must be a non-zero integer");
   }
   if (!reason.trim()) {
-    throw new Error("La razón es obligatoria");
+    throw new Error("A reason is required");
   }
 
   return withServiceContext(async (tx) => {
@@ -134,7 +134,7 @@ export async function adminAdjustTokens(
       .returning({ newBalance: users.tokensBalance });
 
     if (!updated[0]) {
-      throw new Error(`Usuario ${userId} no existe`);
+      throw new Error(`User ${userId} does not exist`);
     }
 
     await tx.insert(tokenTransactions).values({
@@ -147,7 +147,7 @@ export async function adminAdjustTokens(
   });
 }
 
-/** Tokens por plan al reset mensual (sección 10). */
+/** Tokens per plan on the monthly reset (section 10). */
 export const MONTHLY_TOKENS: Record<string, number> = {
   free: 3,
   pro: 60,
@@ -155,9 +155,9 @@ export const MONTHLY_TOKENS: Record<string, number> = {
 };
 
 /**
- * Reset mensual (lo llama el cron): fija el balance de cada usuario al
- * cupo de su plan y registra el delta como monthly_reset en el ledger.
- * Todo en una transacción de servicio.
+ * Monthly reset (called by the cron): sets each user balance to their
+ * plan quota and records the delta as monthly_reset in the ledger.
+ * All in one service transaction.
  */
 export async function monthlyReset(): Promise<{ usersReset: number }> {
   return withServiceContext(async (tx) => {

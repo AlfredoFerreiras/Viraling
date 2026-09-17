@@ -8,15 +8,15 @@ import {
 import { APP_NAME } from "@/lib/brand";
 
 /**
- * PDF de guía de producción (bloque 7): mismo layout y colores por
- * sección que la UI. Se genera bajo demanda, no se almacena.
+ * Production guide PDF (block 7): the same layout and per section
+ * colors as the UI. Generated on demand, never stored.
  */
 
 const COLORS: Record<string, string> = {
   hook: "#fb7185", // rose
-  contexto: "#38bdf8", // sky
-  problema: "#fb923c", // orange
-  solucion: "#34d399", // emerald
+  context: "#38bdf8", // sky
+  problem: "#fb923c", // orange
+  solution: "#34d399", // emerald
   cta: "#fbbf24", // amber
   slide: "#38bdf8",
   slide_cta: "#fbbf24",
@@ -146,7 +146,7 @@ export function ScriptPdf({ data }: { data: ScriptPdfData }) {
     <Document title={data.title}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.brand}>{APP_NAME} · Guía de producción</Text>
+          <Text style={styles.brand}>{APP_NAME} · Production guide</Text>
           <Text style={styles.title}>{data.title}</Text>
           <Text style={styles.meta}>
             {[

@@ -6,11 +6,11 @@ import { getCurrentUser } from "@/lib/auth";
 import { getServerDict } from "@/lib/i18n/server";
 import { isAiEnabled } from "@/lib/settings";
 
-/** Costo estimado por llamada a la API de Anthropic (sonnet, ~2k in/2k out). */
+/** Estimated cost per Anthropic API call (sonnet, ~2k in/2k out). */
 const COST_PER_CALL_USD = 0.04;
 
 export default async function AdminDashboardPage() {
-  const user = (await getCurrentUser())!; // layout ya validó admin
+  const user = (await getCurrentUser())!; // the layout already validated admin
   const { dict } = await getServerDict();
 
   const stats = await withDbContext(

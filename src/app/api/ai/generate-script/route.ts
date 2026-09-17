@@ -13,17 +13,17 @@ import { consumeTokens, grantTokens, InsufficientTokensError } from "@/lib/token
 
 /**
  * POST /api/ai/generate-script (secciones 8.3 y 9.2)
- * Mismo flujo de seguridad que extract-format. La salida cambia según
+ * Same security flow as extract-format. The output shape changes with
  * contentType (reel | carousel | story).
  */
 export async function POST(req: NextRequest) {
-  // 1. Sesión válida
+  // 1. Valid session
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // Kill switch global (sección 7.3.7)
+  // Global kill switch (section 7.3.7)
   if (!(await isAiEnabled())) {
     return NextResponse.json(
       { error: "Generation is under maintenance, please try again later" },
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.ok) return parsed.response;
   const input = parsed.data;
 
-  // Ownership a nivel de app + RLS: nicho propio; formato global o propio
+  // App level ownership + RLS: own niche; global or own format
   const { niche, format } = await withDbContext(
     { userId: user.id, role: "user" },
     async (tx) => {
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   if (!niche) {
     return NextResponse.json({ error: "Niche not found" }, { status: 404 });
   }
-  // RLS ya filtra formats a globales+propios; doble validación en app:
+  // RLS already filters formats to global + own; second check in the app:
   if (
     !format ||
     format.status !== "active" ||
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 
-  // 5. Claude con skeleton + brand_voice, salida validada según tipo
+  // 5. Claude with skeleton + brand_voice, output validated per type
   try {
     const userContent = [
       wrapUserData("skeleton_formato", JSON.stringify(format.skeleton)),
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
       schema: scriptOutputByType[input.contentType],
     });
 
-    // 6. Guardar en scripts
+    // 6. Save into scripts
     const [script] = await withDbContext({ userId: user.id, role: "user" }, (tx) =>
       tx
         .insert(scripts)

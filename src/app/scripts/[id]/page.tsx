@@ -8,12 +8,12 @@ import { formats, scripts } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { getServerDict } from "@/lib/i18n/server";
 
-/** Colores por sección (mismos que el PDF). */
+/** Colors per section (the same ones as the PDF). */
 const SECTION_STYLE: Record<string, { border: string; badge: "rose" | "sky" | "orange" | "emerald" | "amber" }> = {
   hook: { border: "border-l-rose-400", badge: "rose" },
-  contexto: { border: "border-l-sky-400", badge: "sky" },
-  problema: { border: "border-l-orange-400", badge: "orange" },
-  solucion: { border: "border-l-emerald-400", badge: "emerald" },
+  context: { border: "border-l-sky-400", badge: "sky" },
+  problem: { border: "border-l-orange-400", badge: "orange" },
+  solution: { border: "border-l-emerald-400", badge: "emerald" },
   cta: { border: "border-l-amber-400", badge: "amber" },
 };
 
@@ -143,9 +143,9 @@ export default async function ScriptPage({
             const badgeColor =
               s.purpose === "cta"
                 ? "amber"
-                : s.purpose === "producto"
+                : s.purpose === "product"
                   ? "emerald"
-                  : s.purpose === "prueba"
+                  : s.purpose === "proof"
                     ? "sky"
                     : "rose";
             return (

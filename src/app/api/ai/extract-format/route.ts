@@ -12,18 +12,18 @@ import { extractFormatInput, skeletonOutput } from "@/lib/validations/ai";
 import { consumeTokens, grantTokens, InsufficientTokensError } from "@/lib/tokens";
 
 /**
- * POST /api/ai/extract-format (sección 8.4)
- * Flujo obligatorio: sesión → rate limit → Zod → consumeTokens →
- * Claude → Zod de salida → guardar formato con owner_scope user.
+ * POST /api/ai/extract-format (section 8.4)
+ * Mandatory flow: session, rate limit, Zod, consumeTokens,
+ * Claude, Zod on the output, save the format with owner_scope user.
  */
 export async function POST(req: NextRequest) {
-  // 1. Sesión válida
+  // 1. Valid session
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // Kill switch global (sección 7.3.7)
+  // Global kill switch (section 7.3.7)
   if (!(await isAiEnabled())) {
     return NextResponse.json(
       { error: "Generation is under maintenance, please try again later" },
@@ -31,16 +31,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 2. Rate limit por usuario y por IP
+  // 2. Rate limit per user and per IP
   const limited = await enforceAiRateLimit(req, user.id);
   if (limited) return limited;
 
-  // 3. Validación Zod del input
+  // 3. Zod validation of the input
   const parsed = await parseBody(req, extractFormatInput);
   if (!parsed.ok) return parsed.response;
   const input = parsed.data;
 
-  // Ownership a nivel de app (además del RLS): el nicho debe ser del user
+  // App level ownership (on top of RLS): the niche must belong to the user
   if (input.nicheId) {
     const [niche] = await withDbContext({ userId: user.id, role: "user" }, (tx) =>
       tx
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 4. Descontar el token ANTES de llamar a Claude
+  // 4. Debit the token BEFORE calling Claude
   try {
     await consumeTokens(user.id, 1, "extraction");
   } catch (err) {
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 
-  // 5. Claude + validación de salida (reintento interno único)
+  // 5. Claude + output validation (single internal retry)
   try {
     const userContent = [
       wrapUserData("transcript", input.transcript),
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       schema: skeletonOutput,
     });
 
-    // 6. Guardar en formats con owner_scope user
+    // 6. Save into formats with owner_scope user
     const [format] = await withDbContext({ userId: user.id, role: "user" }, (tx) =>
       tx
         .insert(formats)
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ format }, { status: 201 });
   } catch (err) {
-    // Falla de Claude o de guardado: reembolsar el token consumido
+    // Claude or save failure: refund the spent token
     await grantTokens(user.id, 1, "refund");
     if (err instanceof AiOutputError) {
       return NextResponse.json(

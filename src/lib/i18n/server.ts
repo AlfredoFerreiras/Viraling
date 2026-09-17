@@ -1,14 +1,9 @@
-import { cookies } from "next/headers";
-import { getDict, normalizeLang, type Dict, type Lang } from "./dictionaries";
+import { getDict, type Dict } from "./dictionaries";
 
-export const LANG_COOKIE = "fb_lang";
-
-export async function getLang(): Promise<Lang> {
-  const store = await cookies();
-  return normalizeLang(store.get(LANG_COOKIE)?.value);
-}
-
-export async function getServerDict(): Promise<{ lang: Lang; dict: Dict }> {
-  const lang = await getLang();
-  return { lang, dict: getDict(lang) };
+/**
+ * Server-side access to the UI copy. The app ships in English only, so this
+ * is a thin wrapper that keeps every page reading from the same dictionary.
+ */
+export async function getServerDict(): Promise<{ dict: Dict }> {
+  return { dict: getDict() };
 }

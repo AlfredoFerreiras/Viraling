@@ -2,13 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth/token";
 
 /**
- * Proxy (middleware) de la app:
- *  1. CORS: las API routes solo aceptan requests del propio origin.
- *  2. Auth barata: sin cookie de sesión, las páginas privadas redirigen a
- *     /sign-in y las API responden 401. La validación real de la sesión
- *     (existe en DB, no venció) la hace getCurrentUser en cada página y
- *     handler, así que una cookie inventada no pasa de ahí.
- *  3. Headers de seguridad en toda respuesta.
+ * App proxy (middleware):
+ *  1. CORS: API routes only accept requests from our own origin.
+ *  2. Cheap auth: with no session cookie, private pages redirect to
+ *     /sign-in and APIs answer 401. The real session validation
+ *     (exists in the DB, not expired) happens in getCurrentUser on every
+ *     page and handler, so a forged cookie gets no further than this.
+ *  3. Security headers on every response.
  */
 
 const PUBLIC_PAGES = new Set(["/", "/terms", "/privacy", "/sign-in", "/sign-up"]);
@@ -32,9 +32,9 @@ function allowedOrigins(): string[] {
 }
 
 /**
- * CORS (sección 7.1): si viene un header Origin y no está en la lista,
- * 403 antes de cualquier lógica. Junto con la cookie sameSite=lax esto
- * también cubre CSRF en los POST de la API.
+ * CORS (section 7.1): if an Origin header arrives and is not allowlisted,
+ * return 403 before any logic. Together with the sameSite=lax cookie this
+ * also covers CSRF on API POSTs.
  */
 function corsViolation(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
@@ -43,9 +43,9 @@ function corsViolation(request: NextRequest): boolean {
 }
 
 /**
- * Headers de seguridad (sección 7.1). Sin proveedores externos de auth,
- * la CSP solo permite el propio origin. En dev se suma 'unsafe-eval' y
- * websockets porque el hot reload de Next lo requiere.
+ * Security headers (section 7.1). With no external auth providers,
+ * the CSP only allows our own origin. In dev we add unsafe-eval and
+ * websockets because the Next hot reload requires them.
  */
 function applySecurityHeaders(res: NextResponse): void {
   const isDev = process.env.NODE_ENV !== "production";

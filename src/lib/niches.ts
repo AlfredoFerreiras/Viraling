@@ -17,7 +17,7 @@ export async function getUserNiches(userId: string): Promise<Niche[]> {
   );
 }
 
-/** Nicho activo: cookie fb_niche si pertenece al user, si no el primero. */
+/** Active niche: the fb_niche cookie if it belongs to the user, else the first. */
 export async function getActiveNiche(
   userNiches: Niche[],
 ): Promise<Niche | null> {

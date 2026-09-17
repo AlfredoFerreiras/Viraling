@@ -29,6 +29,13 @@
       "when": 1789353170484,
       "tag": "0003_drop_clerk_id",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789621476083,
+      "tag": "0004_english_only",
+      "breakpoints": true
     }
   ]
 }

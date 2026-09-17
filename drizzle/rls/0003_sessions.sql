@@ -1,6 +1,6 @@
 -- ---------- SESSIONS ----------
--- Solo el contexto de servicio (app.current_role = 'admin') lee y escribe
--- sesiones. Ningún usuario final las toca directamente.
+-- Only the service context (app.current_role = 'admin') reads and writes
+-- sessions. No end user touches them directly.
 alter table sessions enable row level security;
 alter table sessions force row level security;
 

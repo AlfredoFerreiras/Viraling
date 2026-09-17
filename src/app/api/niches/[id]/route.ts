@@ -39,7 +39,7 @@ export async function PATCH(
           ctaWord: input.brandVoice.cta_word,
         }),
       })
-      // RLS también filtra; doble capa de ownership
+      // RLS filters too; second ownership layer
       .where(and(eq(niches.id, id), eq(niches.userId, user.id)))
       .returning(),
   );
@@ -63,8 +63,8 @@ export async function DELETE(
   const deleted = await withDbContext(
     { userId: user.id, role: "user" },
     async (tx) => {
-      // Sin cascade en las FKs de scripts/formats: limpiar dependencias
-      // primero, dentro de la misma transacción (RLS limita a filas propias).
+      // No cascade on the scripts/formats FKs: clean up dependencies
+      // first, inside the same transaction (RLS limits this to own rows).
       await tx.delete(scripts).where(eq(scripts.nicheId, id));
       await tx
         .update(formats)

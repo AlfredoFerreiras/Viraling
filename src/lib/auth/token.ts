@@ -1,16 +1,16 @@
 import { createHash, randomBytes } from "node:crypto";
 
 /**
- * Helpers puros de sesión (sin DB ni cookies) para poder testearlos.
+ * Pure session helpers (no DB, no cookies) so they can be tested.
  *
- * El token que viaja en la cookie es aleatorio (256 bits). En la DB solo
- * se guarda su sha256: si alguien lee la tabla sessions no puede
- * reconstruir cookies válidas.
+ * The token carried in the cookie is random (256 bits). The DB only
+ * stores its sha256: someone who reads the sessions table cannot
+ * reconstruct valid cookies.
  */
 
 export const SESSION_COOKIE = "viraling_session";
 export const SESSION_DAYS = 30;
-/** Si a la sesión le quedan menos de esto, se extiende (sliding). */
+/** If a session has less than this left, it is extended (sliding). */
 export const SESSION_REFRESH_DAYS = 15;
 
 const DAY_MS = 24 * 60 * 60 * 1000;

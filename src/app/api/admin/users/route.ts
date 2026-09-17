@@ -4,7 +4,7 @@ import { withDbContext } from "@/db/context";
 import { users } from "@/db/schema";
 import { adminGuard } from "@/lib/admin";
 
-/** Tabla de usuarios con búsqueda por email (bloque 8.4). */
+/** Users table with search by email (block 8.4). */
 export async function GET(req: NextRequest) {
   const guard = await adminGuard();
   if (!guard.ok) return guard.response;

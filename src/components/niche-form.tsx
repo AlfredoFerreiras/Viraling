@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { DictKey } from "@/lib/i18n/dictionaries";
 import { useI18n } from "./i18n-provider";
-import { Button, Card, Input, Label, Select, Spinner, Textarea, cx } from "./ui";
+import { Button, Card, Input, Label, Spinner, Textarea, cx } from "./ui";
 
 export type NicheFormValues = {
   name: string;
-  language: "es" | "en";
+  language: "en";
   brandVoice: {
     sells: string;
     ideal_client: string;
@@ -95,9 +95,9 @@ function Chip({
 }
 
 /**
- * mode "wizard": onboarding con selecciones (las 8 preguntas de la sección
- * 8.1, pero en chips; solo nombre, tono y palabra CTA son obligatorios).
- * mode "full": formulario completo para editar los textos guardados.
+ * mode "wizard": onboarding with chip selections (the 8 questions from
+ * section 8.1; only name, tone and CTA word are required).
+ * mode "full": complete form to edit the saved text.
  */
 export function NicheForm({
   mode,
@@ -115,7 +115,7 @@ export function NicheForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Estado de selecciones del wizard
+  // Wizard selection state
   const [sellChoice, setSellChoice] = useState<string>("");
   const [sellDetail, setSellDetail] = useState("");
   const [audChoices, setAudChoices] = useState<string[]>([]);
@@ -150,7 +150,7 @@ export function NicheForm({
     }
   }
 
-  // ---------- Modo edición: formulario completo ----------
+  // ---------- Edit mode: complete form ----------
   if (mode === "full") {
     const fields: { label: string; key: keyof NicheFormValues["brandVoice"] }[] = [
       { label: t("onb.q1"), key: "sells" },
@@ -162,26 +162,12 @@ export function NicheForm({
     ];
     return (
       <Card className="space-y-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label>{t("onb.name")}</Label>
-            <Input
-              value={values.name}
-              onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-            />
-          </div>
-          <div>
-            <Label>{t("onb.lang")}</Label>
-            <Select
-              value={values.language}
-              onChange={(e) =>
-                setValues((v) => ({ ...v, language: e.target.value as "es" | "en" }))
-              }
-            >
-              <option value="en">{t("onb.langEn")}</option>
-              <option value="es">{t("onb.langEs")}</option>
-            </Select>
-          </div>
+        <div>
+          <Label>{t("onb.name")}</Label>
+          <Input
+            value={values.name}
+            onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+          />
         </div>
         {fields.map((f) => (
           <div key={f.key}>
@@ -240,7 +226,7 @@ export function NicheForm({
   };
 
   const steps: Step[] = [
-    // 0 · Nombre + idioma
+    // 0. Name
     {
       title: t("onb.name"),
       canNext: values.name.trim().length >= 2,
@@ -255,24 +241,10 @@ export function NicheForm({
               autoFocus
             />
           </div>
-          <div>
-            <Label>{t("onb.lang")}</Label>
-            <div className="flex gap-2">
-              {(["en", "es"] as const).map((l) => (
-                <Chip
-                  key={l}
-                  selected={values.language === l}
-                  onClick={() => setValues((v) => ({ ...v, language: l }))}
-                >
-                  {l === "es" ? t("onb.langEs") : t("onb.langEn")}
-                </Chip>
-              ))}
-            </div>
-          </div>
         </div>
       ),
     },
-    // 1 · Qué vendes (selección + detalle opcional)
+    // 1. What you sell (selection + optional detail)
     {
       title: t("onb.q1"),
       canNext: sellChoice !== "",
@@ -294,7 +266,7 @@ export function NicheForm({
             <Input
               value={sellDetail}
               onChange={(e) => setSellDetail(e.target.value)}
-              placeholder="Ej. reparación de crédito, tarjetas, funding"
+              placeholder="e.g. credit repair, cards, funding"
             />
           </div>
         </div>
@@ -338,7 +310,7 @@ export function NicheForm({
         </div>
       ),
     },
-    // 3 · Tono (selección) + palabra CTA
+    // 3. Tone (selection) + CTA word
     {
       title: t("onb.q4"),
       canNext: toneChoice !== "" && bv.cta_word.trim().length > 0,
@@ -366,7 +338,7 @@ export function NicheForm({
         </div>
       ),
     },
-    // 4 · Detalles opcionales (transformación, casos, qué no decir)
+    // 4. Optional details (transformation, cases, what not to say)
     {
       title: `${t("onb.q3").split("(")[0].trim()}`,
       optional: true,
@@ -400,7 +372,7 @@ export function NicheForm({
         </div>
       ),
     },
-    // 5 · Frecuencia (selección)
+    // 5. Frequency (selection)
     {
       title: t("onb.q8"),
       canNext: true,

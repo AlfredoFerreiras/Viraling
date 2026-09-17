@@ -4,13 +4,13 @@ import { NextResponse } from "next/server";
 import { MemoryLimiter, type LimitResult } from "./memory-limiter";
 
 /**
- * Rate limiting (sección 7.3.4).
+ * Rate limiting (section 7.3.4).
  *
- * Distribuido con Upstash Redis cuando UPSTASH_REDIS_REST_URL/TOKEN están
- * definidos. Si Redis no está configurado o falla, cae a un sliding
- * window en memoria (por instancia) y avisa por consola: una caída del
- * proveedor degrada la protección, nunca tumba la app. El tope duro de
- * gasto sigue siendo el ledger de créditos, que no depende de Redis.
+ * Distributed with Upstash Redis when UPSTASH_REDIS_REST_URL/TOKEN are
+ * defined. If Redis is not configured or fails, it falls back to an
+ * in-memory sliding window (per instance) and warns on the console: a
+ * provider outage degrades protection, it never takes the app down. The
+ * hard spend ceiling is still the credit ledger, which does not need Redis.
  */
 
 function connectRedis(): Redis | null {
@@ -65,16 +65,16 @@ class Limiter {
   }
 }
 
-/** 5 requests de IA por minuto por userId (sección 7.3). */
+/** 5 AI requests per minute per userId (section 7.3). */
 export const aiLimiter = new Limiter("rl:ai", 5, "1 m");
 
-/** 20 requests por minuto por IP a endpoints de IA. */
+/** 20 requests per minute per IP on AI endpoints. */
 export const ipLimiter = new Limiter("rl:ip", 20, "1 m");
 
-/** Registro de cuentas: 5 por hora por IP (sin verificación de email). */
+/** Account sign-ups: 5 per hour per IP (no email verification). */
 export const signUpLimiter = new Limiter("rl:signup", 5, "1 h");
 
-/** Intentos de login: 10 por 10 minutos por IP+email (fuerza bruta). */
+/** Login attempts: 10 per 10 minutes per IP+email (brute force). */
 export const signInLimiter = new Limiter("rl:signin", 10, "10 m");
 
 export function getClientIp(req: Request): string {
@@ -82,7 +82,7 @@ export function getClientIp(req: Request): string {
   return forwarded?.split(",")[0]?.trim() || "unknown";
 }
 
-/** Respuesta 429 estándar con Retry-After en segundos. */
+/** Standard 429 response with Retry-After in seconds. */
 export function rateLimitResponse(resetAt: number): NextResponse {
   const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
   return NextResponse.json(
@@ -93,9 +93,9 @@ export function rateLimitResponse(resetAt: number): NextResponse {
 
 /**
  * Aplica ambos limiters a un endpoint de IA. Devuelve null si pasa,
- * o la respuesta 429 lista para retornar.
+ * or the 429 response ready to be returned.
  *
- * Uso al inicio del handler (después de la sesión, antes de todo lo demás):
+ * Use at the top of the handler (after the session, before everything else):
  *   const limited = await enforceAiRateLimit(req, user.id);
  *   if (limited) return limited;
  */

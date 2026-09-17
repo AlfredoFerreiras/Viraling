@@ -1,11 +1,11 @@
 /**
- * Verificación de seguridad (Prompt 9 · bloque 9):
- *  1. Crea usuarios A y B con datos cada uno (nicho, formato privado, guion).
- *  2. Con el contexto RLS de A intenta leer/usar datos de B: todo vacío.
- *  3. Endpoints sin sesión: 401. Rutas admin sin sesión: 401/redirect.
- *  4. Rate limit: 10 hits al aiLimiter, del 6º en adelante bloqueado.
- *  5. Headers de seguridad y CORS con origin ajeno: presentes / 403.
- * Uso: npm run test:security  (requiere dev server corriendo en :3000)
+ * Security verification (Prompt 9, block 9):
+ *  1. Creates users A and B, each with data (niche, private format, script).
+ *  2. Using the RLS context of A, tries to read/use the data of B: all empty.
+ *  3. Endpoints with no session: 401. Admin routes with no session: 401/redirect.
+ *  4. Rate limit: 10 hits on aiLimiter, blocked from the 6th onwards.
+ *  5. Security headers and CORS with a foreign origin: present / 403.
+ * Usage: npm run test:security  (requires the dev server running on :3000)
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -29,7 +29,7 @@ async function main() {
     if (!cond) failed = true;
   };
 
-  console.log("== 1. Crear usuarios A y B con datos ==");
+  console.log("== 1. Create users A and B with data ==");
   const [userA, userB] = await withServiceContext((tx) =>
     tx
       .insert(users)
@@ -43,7 +43,7 @@ async function main() {
   const [nicheB] = await withDbContext({ userId: userB.id, role: "user" }, (tx) =>
     tx
       .insert(niches)
-      .values({ userId: userB.id, name: "Nicho secreto de B" })
+      .values({ userId: userB.id, name: "Secret niche of B" })
       .returning(),
   );
   const [formatB] = await withDbContext({ userId: userB.id, role: "user" }, (tx) =>
@@ -66,33 +66,33 @@ async function main() {
         nicheId: nicheB.id,
         formatId: formatB.id,
         contentType: "reel",
-        title: "Guion secreto de B",
+        title: "Secret script of B",
         sections: [],
       })
       .returning(),
   );
-  console.log("  usuarios y datos de prueba creados");
+  console.log("  test users and data created");
 
   try {
-    console.log("\n== 2. Acceso cruzado con contexto RLS de A ==");
+    console.log("\n== 2. Cross access using the RLS context of A ==");
     const nichesSeenByA = await withDbContext(
       { userId: userA.id, role: "user" },
       (tx) => tx.select().from(niches).where(eq(niches.userId, userB.id)),
     );
-    check("A no puede leer los nichos de B", nichesSeenByA.length === 0);
+    check("A cannot read the niches of B", nichesSeenByA.length === 0);
 
     const scriptSeenByA = await withDbContext(
       { userId: userA.id, role: "user" },
       (tx) => tx.select().from(scripts).where(eq(scripts.id, scriptB.id)),
     );
-    check("A no puede leer un guion de B por id", scriptSeenByA.length === 0);
+    check("A cannot read a script of B by id", scriptSeenByA.length === 0);
 
     const formatSeenByA = await withDbContext(
       { userId: userA.id, role: "user" },
       (tx) => tx.select().from(formats).where(eq(formats.id, formatB.id)),
     );
     check(
-      "A no puede ver (ni generar con) el formato privado de B",
+      "A cannot see (or generate with) the private format of B",
       formatSeenByA.length === 0,
     );
 
@@ -104,7 +104,7 @@ async function main() {
           .from(tokenTransactions)
           .where(eq(tokenTransactions.userId, userB.id)),
     );
-    check("A no puede leer el ledger de B", ledgerSeenByA.length === 0);
+    check("A cannot read the ledger of B", ledgerSeenByA.length === 0);
 
     const stealUpdate = await withDbContext(
       { userId: userA.id, role: "user" },
@@ -115,34 +115,34 @@ async function main() {
           .where(eq(niches.id, nicheB.id))
           .returning(),
     );
-    check("A no puede modificar el nicho de B", stealUpdate.length === 0);
+    check("A cannot modify the niche of B", stealUpdate.length === 0);
 
-    console.log("\n== 3. Endpoints sin sesión ==");
+    console.log("\n== 3. Endpoints with no session ==");
     const gen = await fetch(`${BASE}/api/ai/generate-script`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
     });
-    check("POST /api/ai/generate-script sin sesión -> 401", gen.status === 401);
+    check("POST /api/ai/generate-script with no session -> 401", gen.status === 401);
 
     const ext = await fetch(`${BASE}/api/ai/extract-format`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{}",
     });
-    check("POST /api/ai/extract-format sin sesión -> 401", ext.status === 401);
+    check("POST /api/ai/extract-format with no session -> 401", ext.status === 401);
 
     const adminApi = await fetch(`${BASE}/api/admin/users`);
-    check("GET /api/admin/users sin sesión -> 401", adminApi.status === 401);
+    check("GET /api/admin/users with no session -> 401", adminApi.status === 401);
 
     const adminPage = await fetch(`${BASE}/admin`, { redirect: "manual" });
     check(
-      "GET /admin sin sesión -> redirect a sign-in",
+      "GET /admin with no session -> redirect to sign-in",
       adminPage.status === 307 || adminPage.status === 302,
       `status ${adminPage.status}`,
     );
 
-    console.log("\n== 4. Rate limit (5/min por user en aiLimiter) ==");
+    console.log("\n== 4. Rate limit (5/min per user on aiLimiter) ==");
     const { aiLimiter } = await import("../src/lib/rate-limit");
     const results: boolean[] = [];
     for (let i = 0; i < 10; i++) {
@@ -188,10 +188,10 @@ async function main() {
   }
 
   if (failed) {
-    console.error("\nVERIFICACIÓN DE SEGURIDAD FALLIDA");
+    console.error("\nSECURITY VERIFICATION FAILED");
     process.exit(1);
   }
-  console.log("\nVERIFICACIÓN DE SEGURIDAD OK");
+  console.log("\nSECURITY VERIFICATION OK");
 }
 
 main().catch((err) => {

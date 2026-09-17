@@ -9,9 +9,9 @@ import { signUpInput } from "@/lib/validations/auth";
 
 /**
  * POST /api/auth/sign-up
- * Crea la cuenta (role user, plan free, 3 créditos por defecto del schema)
- * y abre sesión. Sin verificación de email: el rate limit por IP acota
- * la creación masiva de cuentas.
+ * Creates the account (role user, plan free, 3 credits from the schema defaults)
+ * and opens a session. No email verification: the per IP rate limit bounds
+ * mass account creation.
  */
 export async function POST(req: NextRequest) {
   const limited = await signUpLimiter.limit(getClientIp(req));

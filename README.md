@@ -22,7 +22,7 @@ Sign up for a free account (3 scripts a month, no card), or use the shared demo:
 - **PDF export.** Server-side production guide with timings, on-screen text and covers.
 - **Token economy.** Every generation debits one credit inside a transaction before the AI call. Free plan resets monthly by cron.
 - **Admin panel.** User count, AI usage, global kill switch, format CRUD with reference images on R2, manual credit adjustments with an audit trail.
-- **Bilingual UI.** English by default, Spanish with one click, and scripts are generated in the language of each niche.
+- **Single source of copy.** Every user-facing string lives in one typed dictionary (`src/lib/i18n/dictionaries.ts`), so the UI reads from one place instead of scattered literals.
 
 This is Phase 1 of a four-phase plan (see [CLAUDE.md](CLAUDE.md)). Calendar, CRM, editing service and cover editor are out of scope for this release.
 
@@ -122,4 +122,4 @@ CI runs type check, lint and unit tests on every push.
 
 - The working name during development was FormatBrain, which still appears in the build brief. The product shipped as Viraling.
 - Auth is deliberately self-contained: sign-up needs no email verification, and there is no password reset flow yet. Sign-ups are rate limited per IP and sign-ins per IP and email, and sessions are random 256-bit tokens stored hashed with a 30-day sliding expiry.
-- Code comments and AI system prompts are in Spanish (the original target market); the UI, API responses and docs are in English.
+- The app is English only: UI copy, AI system prompts, generated scripts, code comments and docs.

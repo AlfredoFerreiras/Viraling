@@ -12,8 +12,8 @@ const INVALID = { error: "Invalid email or password" };
 
 /**
  * POST /api/auth/sign-in
- * Misma respuesta (401) y mismo tiempo de cómputo exista o no el email,
- * para no permitir enumerar cuentas. Rate limit por IP + email.
+ * Same response (401) and same compute time whether or not the email exists,
+ * so accounts cannot be enumerated. Rate limited per IP + email.
  */
 export async function POST(req: NextRequest) {
   const parsed = await parseBody(req, signInInput);

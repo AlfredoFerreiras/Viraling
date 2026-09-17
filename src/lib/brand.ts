@@ -1,7 +1,6 @@
 /**
- * Identidad de la app en UN solo lugar. Cambia el nombre aquí y se
- * actualiza en header, landing, metadata y PDF.
+ * App identity in ONE single place. Change the name here and it
+ * updates across header, landing, metadata and PDF.
  */
 export const APP_NAME = "Viraling";
-export const APP_TAGLINE_ES = "Guiones virales para tu nicho";
-export const APP_TAGLINE_EN = "Viral scripts for your niche";
+export const APP_TAGLINE = "Viral scripts for your niche";

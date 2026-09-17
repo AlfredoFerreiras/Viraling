@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 /**
- * Patrón de validación (sección 7.2): ningún route handler toca la DB
- * sin pasar por Zod. Cada handler importa su schema de esta carpeta y
- * llama parseBody; si falla, responde 400 con errores claros.
+ * Validation pattern (section 7.2): no route handler touches the DB
+ * without going through Zod. Each handler imports its schema from this folder
+ * and calls parseBody; on failure it answers 400 with clear errors.
  *
  * Uso:
  *   const parsed = await parseBody(req, miSchema);
  *   if (!parsed.ok) return parsed.response;
- *   // parsed.data está tipado y validado
+ *   // parsed.data is typed and validated
  */
 export async function parseBody<T extends z.ZodType>(
   req: Request,
@@ -50,7 +50,7 @@ export async function parseBody<T extends z.ZodType>(
   return { ok: true, data: parsed.data };
 }
 
-// uuids validados como uuid, no como string libre (sección 7.2)
+// uuids validated as uuid, not as free strings (section 7.2)
 export const uuidSchema = z.uuid();
 
 export const contentTypeSchema = z.enum(["reel", "carousel", "story"]);

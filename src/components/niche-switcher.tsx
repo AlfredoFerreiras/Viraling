@@ -6,8 +6,8 @@ import { useI18n } from "./i18n-provider";
 export type NicheOption = { id: string; name: string };
 
 /**
- * Selector de nicho activo, persistente vía cookie fb_niche.
- * Los server components leen la cookie para preseleccionar.
+ * Active niche selector, persisted through the fb_niche cookie.
+ * Server components read the cookie to preselect it.
  */
 export function NicheSwitcher({
   niches,

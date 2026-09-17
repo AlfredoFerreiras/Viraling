@@ -1,6 +1,6 @@
 /**
- * Kit de UI propio (estilo shadcn, sin dependencia del CLI): componentes
- * pequeños con Tailwind, dark mode por defecto, acento amber.
+ * Own UI kit (shadcn style, without the CLI dependency): small
+ * Tailwind components, dark mode by default, amber accent.
  */
 import { forwardRef, type ComponentProps } from "react";
 

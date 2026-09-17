@@ -3,13 +3,13 @@ import { drizzle } from "drizzle-orm/neon-serverless";
 import ws from "ws";
 import * as schema from "./schema";
 
-// El driver serverless de Neon usa WebSockets para soportar transacciones
-// interactivas (necesarias para setear el contexto RLS por transacción).
-// En Node < 22 con fetch nativo igual hace falta el polyfill de ws.
+// The Neon serverless driver uses WebSockets to support interactive
+// transactions (needed to set the RLS context per transaction).
+// On Node < 22 with native fetch the ws polyfill is still required.
 neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL no está definida");
+  throw new Error("DATABASE_URL is not defined");
 }
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });

@@ -6,18 +6,18 @@ import { extractJson, wrapUserData } from "./json";
 export { wrapUserData };
 
 /**
- * Única puerta de salida hacia la API de Anthropic (sección 7.3):
- *  - la key vive SOLO en process.env del servidor (server-only lo garantiza
- *    en build: importar esto desde un client component rompe la compilación)
+ * The single exit door towards the Anthropic API (section 7.3):
+ *  - the key lives ONLY in process.env on the server (server-only guarantees
+ *    this at build time: importing this from a client component breaks the build)
  *  - max_tokens acotado, timeout, sin retries infinitos
- *  - el texto del usuario SIEMPRE viaja delimitado como datos
- *  - salida validada con Zod; un solo reintento de corrección
+ *  - user text ALWAYS travels delimited as data
+ *  - output validated with Zod; a single correction retry
  */
 
 export const CLAUDE_MODEL = "claude-sonnet-4-6";
 
 const client = new Anthropic({
-  // apiKey se lee de ANTHROPIC_API_KEY automáticamente
+  // apiKey is read from ANTHROPIC_API_KEY automatically
   timeout: 60_000,
   maxRetries: 1,
 });
@@ -45,9 +45,9 @@ async function callOnce(
 }
 
 /**
- * Llama a Claude esperando SOLO JSON conforme al schema. Si la primera
- * respuesta no valida, hace UN reintento pidiendo la corrección. Si vuelve
- * a fallar, lanza AiOutputError (el caller reembolsa el token y responde 502).
+ * Calls Claude expecting ONLY JSON matching the schema. If the first
+ * response does not validate, it makes ONE retry asking for a correction. If it
+ * fails again, it throws AiOutputError (the caller refunds the token and answers 502).
  */
 export async function callClaudeJson<T extends z.ZodType>(opts: {
   system: string;
@@ -65,14 +65,14 @@ export async function callClaudeJson<T extends z.ZodType>(opts: {
     if (parsed.success) return parsed.data;
   }
 
-  // Un solo reintento pidiendo corrección
+  // A single retry asking for a correction
   const retryMessages: Anthropic.MessageParam[] = [
     ...messages,
-    { role: "assistant", content: first || "(respuesta vacía)" },
+    { role: "assistant", content: first || "(empty response)" },
     {
       role: "user",
       content:
-        "Tu respuesta anterior no cumple el formato JSON requerido. Responde ÚNICAMENTE el objeto JSON corregido, sin texto adicional, sin markdown, cumpliendo exactamente el schema indicado en las instrucciones.",
+        "Your previous response does not match the required JSON format. Reply with ONLY the corrected JSON object, no extra text, no markdown, matching exactly the schema given in the instructions.",
     },
   ];
   const second = await callOnce(opts.system, retryMessages);

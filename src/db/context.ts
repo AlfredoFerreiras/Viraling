@@ -13,12 +13,12 @@ export interface DbContext {
 }
 
 /**
- * Ejecuta `fn` dentro de una transacción con el contexto RLS seteado.
+ * Runs `fn` inside a transaction with the RLS context set.
  *
- * Todas las queries de requests autenticados DEBEN pasar por aquí: las
- * policies de RLS filtran por app.current_user_id y app.current_role, y
- * set_config(..., true) limita esos valores a la transacción actual, así
- * que nunca se filtran entre requests que comparten conexión del pool.
+ * Every query from an authenticated request MUST go through here: the
+ * RLS policies filter on app.current_user_id and app.current_role, and
+ * set_config(..., true) scopes those values to the current transaction, so
+ * they never leak between requests sharing a pool connection.
  */
 export async function withDbContext<T>(
   ctx: DbContext,
@@ -35,12 +35,12 @@ export async function withDbContext<T>(
 }
 
 /**
- * Contexto para operaciones de sistema SIN sesión de usuario
- * (login, crons, scripts). Corre con app.current_role = 'admin',
- * que las policies reconocen como acceso total.
+ * Context for system operations with NO user session
+ * (login, crons, scripts). Runs with app.current_role = 'admin',
+ * which the policies treat as full access.
  *
- * Usar SOLO desde código de servidor que ya verificó su propia
- * autenticidad (login verificado con bcrypt, CRON_SECRET, etc.).
+ * Use ONLY from server code that has already verified its own
+ * authenticity (login checked with bcrypt, CRON_SECRET, etc.).
  */
 export async function withServiceContext<T>(
   fn: (tx: DbTransaction) => Promise<T>,

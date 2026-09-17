@@ -6,12 +6,12 @@ import { parseBody, uuidSchema } from "@/lib/validations";
 
 const bodySchema = z.object({
   amount: z.number().int().min(-1000).max(1000).refine((n) => n !== 0, {
-    message: "amount no puede ser 0",
+    message: "amount cannot be 0",
   }),
   reason: z.string().min(3).max(300),
 });
 
-/** Otorgar o quitar tokens con razón obligatoria (queda en el ledger). */
+/** Grant or remove tokens with a mandatory reason (kept in the ledger). */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },

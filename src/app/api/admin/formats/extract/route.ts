@@ -6,9 +6,9 @@ import { parseBody } from "@/lib/validations";
 import { extractFormatInput, skeletonOutput } from "@/lib/validations/ai";
 
 /**
- * Extractor para admin (bloque 8.3): mismo prompt del extractor pero SIN
- * consumir tokens del admin y sin guardar — devuelve el skeleton propuesto
- * para que el admin lo edite y publique.
+ * Extractor for admin (block 8.3): the same extractor prompt but WITHOUT
+ * spending admin tokens and without saving. It returns the proposed
+ * skeleton so the admin can edit and publish it.
  */
 export async function POST(req: NextRequest) {
   const guard = await adminGuard();

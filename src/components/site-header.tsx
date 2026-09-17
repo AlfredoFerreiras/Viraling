@@ -3,7 +3,6 @@ import { APP_NAME } from "@/lib/brand";
 import { getServerDict } from "@/lib/i18n/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveNiche, getUserNiches } from "@/lib/niches";
-import { LanguageSwitcher } from "./language-switcher";
 import { NavLinks } from "./nav-links";
 import { NicheSwitcher } from "./niche-switcher";
 import { UserMenu } from "./user-menu";
@@ -59,7 +58,6 @@ export async function SiteHeader() {
               </span>
             </>
           )}
-          <LanguageSwitcher />
           {user ? (
             <UserMenu email={user.email} />
           ) : (

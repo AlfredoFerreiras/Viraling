@@ -9,7 +9,7 @@ export function Skeleton({ className }: { className?: string }) {
   );
 }
 
-/** Skeleton genérico de página: título + fila de stats + grid de cards. */
+/** Generic page skeleton: title + stats row + card grid. */
 export function PageSkeleton() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">

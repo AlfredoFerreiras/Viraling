@@ -21,7 +21,7 @@ export default async function EditNichePage({
   const parsedBv = brandVoiceSchema.safeParse(niche.brandVoice);
   const initial: NicheFormValues = {
     name: niche.name,
-    language: niche.language === "en" ? "en" : "es",
+    language: "en",
     brandVoice: parsedBv.success
       ? parsedBv.data
       : {

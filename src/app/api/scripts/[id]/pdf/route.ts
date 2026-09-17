@@ -10,8 +10,8 @@ import { ScriptPdf, type ScriptPdfData } from "@/lib/pdf/script-pdf";
 import { uuidSchema } from "@/lib/validations";
 
 /**
- * GET /api/scripts/[id]/pdf (bloque 7): genera el PDF bajo demanda,
- * server-side, sin almacenarlo (el pdf_key del schema queda para después).
+ * GET /api/scripts/[id]/pdf (block 7): generates the PDF on demand,
+ * server-side, without storing it (the pdf_key in the schema is for later).
  */
 export async function GET(
   _req: NextRequest,
@@ -44,7 +44,7 @@ export async function GET(
 
   const { dict } = await getServerDict();
   const data: ScriptPdfData = {
-    title: row.script.title ?? "Guion",
+    title: row.script.title ?? "Script",
     contentType: row.script.contentType as ScriptPdfData["contentType"],
     formatName: row.formatName,
     nicheName: row.nicheName,
@@ -67,10 +67,10 @@ export async function GET(
     createElement(ScriptPdf, { data }) as React.ReactElement<DocumentProps>,
   );
 
-  const safeName = (row.script.title ?? "guion")
+  const safeName = (row.script.title ?? "script")
     .replace(/[^\p{L}\p{N} _-]/gu, "")
     .slice(0, 60)
-    .trim() || "guion";
+    .trim() || "script";
 
   return new NextResponse(new Uint8Array(buffer), {
     headers: {

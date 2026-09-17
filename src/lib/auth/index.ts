@@ -19,11 +19,11 @@ export class ForbiddenError extends Error {
 }
 
 /**
- * Resuelve el usuario de la DB desde la cookie de sesión.
- * Devuelve null si no hay cookie, la sesión no existe o venció.
+ * Resolves the DB user from the session cookie.
+ * Returns null if there is no cookie, or the session does not exist or expired.
  *
- * El rol SIEMPRE sale de users.role en la DB. Cacheado por request con
- * React cache(): header, layout y página comparten una sola consulta.
+ * The role ALWAYS comes from users.role in the DB. Cached per request with
+ * React cache(): header, layout and page share a single query.
  */
 export const getCurrentUser = cache(async (): Promise<DbUser | null> => {
   const token = await readSessionCookie();
@@ -32,14 +32,14 @@ export const getCurrentUser = cache(async (): Promise<DbUser | null> => {
   return result?.user ?? null;
 });
 
-/** Como getCurrentUser, pero lanza UnauthorizedError si no hay sesión. */
+/** Like getCurrentUser, but throws UnauthorizedError if there is no session. */
 export async function requireUser(): Promise<DbUser> {
   const user = await getCurrentUser();
   if (!user) throw new UnauthorizedError();
   return user;
 }
 
-/** Exige un rol exacto (p. ej. requireRole('admin') en rutas de admin). */
+/** Requires an exact role (e.g. requireRole('admin') on admin routes). */
 export async function requireRole(role: DbUser["role"]): Promise<DbUser> {
   const user = await requireUser();
   if (user.role !== role) throw new ForbiddenError();

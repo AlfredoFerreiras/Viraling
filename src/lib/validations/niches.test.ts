@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { brandVoiceSchema, nicheInput, nicheUpdateInput } from "./niches";
 
 const voice = {
-  sells: "Asesoría de crédito",
-  ideal_client: "Latinos en USA, español",
+  sells: "Credit coaching",
+  ideal_client: "First time borrowers in the US",
   transformation: "De score 500 a 700",
   tone: "cercano",
   never_say: "garantizado",
-  cta_word: "CRÉDITO",
+  cta_word: "CREDIT",
   success_cases: "300 clientes",
   recordings_per_week: "3",
 };
@@ -47,12 +47,12 @@ describe("nicheInput", () => {
 
   it("only allows es or en", () => {
     expect(
-      nicheInput.safeParse({ name: "Nicho", language: "fr", brandVoice: voice }).success,
+      nicheInput.safeParse({ name: "Niche", language: "fr", brandVoice: voice }).success,
     ).toBe(false);
   });
 
   it("update input makes every field optional", () => {
     expect(nicheUpdateInput.safeParse({}).success).toBe(true);
-    expect(nicheUpdateInput.safeParse({ name: "Nuevo nombre" }).success).toBe(true);
+    expect(nicheUpdateInput.safeParse({ name: "New name" }).success).toBe(true);
   });
 });

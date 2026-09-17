@@ -1,8 +1,8 @@
 /**
- * Smoke test del flujo de IA (bloque 5): llama a Claude de verdad con un
- * transcript corto y valida que la salida cumple el schema del skeleton.
+ * Smoke test for the AI flow (block 5): makes a real call to Claude with a
+ * short transcript and checks the output matches the skeleton schema.
  * Cuesta centavos. Uso: npm run test:ai
- * (requiere --conditions=react-server por el guard de server-only)
+ * (requires --conditions=react-server because of the server-only guard)
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -12,11 +12,11 @@ async function main() {
   const { EXTRACTOR_SYSTEM } = await import("../src/lib/ai/prompts");
   const { skeletonOutput } = await import("../src/lib/validations/ai");
 
-  const transcript = `Estos son los 3 errores que te tienen el credit score en el piso.
-Error número uno: pagar tarde. Aunque sea un día tarde, el reporte llega al bureau.
-Error número dos: usar más del 30% de tu límite. La utilización pesa el 30% de tu score.
-Error número tres: cerrar tarjetas viejas. La antigüedad promedio se te cae de golpe.
-Si quieres que te ayude a limpiar tu crédito, comenta la palabra CREDITO y te mando la guía.`;
+  const transcript = `These are the 3 mistakes keeping your credit score on the floor.
+Mistake number one: paying late. Even one day late and the report reaches the bureau.
+Mistake number two: using more than 30% of your limit. Utilization is 30% of your score.
+Mistake number three: closing old cards. Your average account age drops all at once.
+If you want help cleaning up your credit, comment the word CREDIT and I will send you the guide.`;
 
   console.log("Llamando a Claude (extractor de formatos)...");
   const skeleton = await callClaudeJson({
@@ -25,7 +25,7 @@ Si quieres que te ayude a limpiar tu crédito, comenta la palabra CREDITO y te m
     schema: skeletonOutput,
   });
 
-  console.log("\nSkeleton extraído y validado con Zod:");
+  console.log("\nSkeleton extracted and validated with Zod:");
   console.log(`  name: ${skeleton.name}`);
   console.log(`  hook_type: ${skeleton.hook_type}`);
   console.log(`  secciones: ${skeleton.structure.map((s) => s.section).join(" -> ")}`);

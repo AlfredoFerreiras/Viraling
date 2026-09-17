@@ -1,5 +1,5 @@
--- RLS de app_settings: solo admin (los reads de sistema usan contexto
--- de servicio, que corre como admin).
+-- RLS for app_settings: admin only (system reads use the service
+-- context, which runs as admin).
 alter table app_settings enable row level security;
 alter table app_settings force row level security;
 

@@ -1,10 +1,10 @@
 /**
- * Crea el rol app_user SIN BYPASSRLS para el runtime de la app.
- * El rol dueño de Neon (neondb_owner) tiene BYPASSRLS, así que si la app
- * se conecta con él, TODO el RLS se ignora. Defensa real = rol dedicado.
+ * Creates the app_user role WITHOUT BYPASSRLS for the app runtime.
+ * The Neon owner role (neondb_owner) has BYPASSRLS, so if the app
+ * connects with it, ALL RLS is ignored. Real defence = a dedicated role.
  *
  * Uso: APP_ROLE_PASSWORD=xxx tsx scripts/setup-app-role.ts
- * (usa ADMIN_DATABASE_URL o DATABASE_URL como conexión de owner)
+ * (uses ADMIN_DATABASE_URL or DATABASE_URL as the owner connection)
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -26,8 +26,8 @@ async function main() {
     "select 1 from pg_roles where rolname = 'app_user'",
   );
   if (rows.length === 0) {
-    // La contraseña se interpola porque CREATE ROLE no acepta parámetros;
-    // viene de env local, nunca de input de usuario.
+    // The password is interpolated because CREATE ROLE takes no parameters;
+    // it comes from the local env, never from user input.
     await pool.query(
       `create role app_user with login password '${password.replace(/'/g, "''")}' nobypassrls`,
     );
@@ -44,12 +44,12 @@ async function main() {
     grant select, insert, update, delete on all tables in schema public to app_user;
     alter default privileges in schema public grant select, insert, update, delete on tables to app_user;
   `);
-  console.log("Permisos otorgados sobre schema public");
+  console.log("Permissions granted on schema public");
 
   const check = await pool.query(
     "select rolbypassrls from pg_roles where rolname = 'app_user'",
   );
-  console.log(`app_user bypassrls = ${check.rows[0].rolbypassrls} (debe ser false)`);
+  console.log(`app_user bypassrls = ${check.rows[0].rolbypassrls} (must be false)`);
   await pool.end();
 }
 

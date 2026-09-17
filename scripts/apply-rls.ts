@@ -1,7 +1,7 @@
 /**
- * Aplica los archivos SQL de RLS (drizzle/rls/*.sql) a la base.
+ * Applies the RLS SQL files (drizzle/rls/*.sql) to the database.
  * Uso: npm run db:rls
- * Los archivos son idempotentes: se pueden re-aplicar sin romper nada.
+ * The files are idempotent: they can be re-applied without breaking anything.
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -16,7 +16,7 @@ neonConfig.webSocketConstructor = ws;
 async function main() {
   const url = process.env.ADMIN_DATABASE_URL ?? process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL no está definida (revisa .env.local)");
+    throw new Error("DATABASE_URL is not defined (check .env.local)");
   }
   const pool = new Pool({ connectionString: url });
   const dir = join(process.cwd(), "drizzle", "rls");

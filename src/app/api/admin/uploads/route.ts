@@ -6,8 +6,8 @@ import { adminGuard } from "@/lib/admin";
 import { parseBody } from "@/lib/validations";
 
 /**
- * Presigned URL de subida a R2 (sección 7.4): vida corta (15 min),
- * whitelist de content-types de imagen, el servidor nunca recibe el archivo.
+ * Presigned R2 upload URL (section 7.4): short lived (15 min),
+ * image content-type whitelist, the server never receives the file.
  */
 const bodySchema = z.object({
   filename: z.string().min(1).max(200),

@@ -5,8 +5,8 @@ import { appSettings } from "@/db/schema";
 const AI_ENABLED_KEY = "ai_enabled";
 
 /**
- * Kill switch (sección 7.3.7): flag en DB. Si está apagado, los endpoints
- * de IA responden 503 con mensaje de mantenimiento. Por defecto: encendido.
+ * Kill switch (section 7.3.7): a flag in the DB. When off, the AI
+ * endpoints answer 503 with a maintenance message. Default: on.
  */
 export async function isAiEnabled(): Promise<boolean> {
   const [row] = await withServiceContext((tx) =>

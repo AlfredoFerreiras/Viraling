@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/skeleton";
 
-/** Skeleton específico de la vista de guion (secciones + portadas). */
+/** Skeleton specific to the script view (sections + covers). */
 export default function ScriptLoading() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10">

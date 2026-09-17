@@ -1,262 +1,8 @@
-export type Lang = "es" | "en";
-
-const es = {
-  // Nav
-  "nav.dashboard": "Inicio",
-  "nav.generate": "Generar",
-  "nav.extract": "Extraer",
-  "nav.history": "Historial",
-  "nav.niches": "Nichos",
-  "nav.admin": "Admin",
-  "nav.signIn": "Iniciar sesión",
-  "nav.signUp": "Crear cuenta",
-  "nav.tokens": "tokens",
-
-  // Auth
-  "auth.signInTitle": "Iniciar sesión",
-  "auth.signInSubtitle": "Entra con tu correo y contraseña.",
-  "auth.signUpTitle": "Crear cuenta",
-  "auth.signUpSubtitle": "Gratis, sin tarjeta. 3 guiones al mes para empezar.",
-  "auth.email": "Correo",
-  "auth.password": "Contraseña",
-  "auth.passwordHint": "Mínimo 8 caracteres.",
-  "auth.signInButton": "Entrar",
-  "auth.signUpButton": "Crear cuenta",
-  "auth.noAccount": "¿No tienes cuenta?",
-  "auth.haveAccount": "¿Ya tienes cuenta?",
-  "auth.invalid": "Correo o contraseña incorrectos.",
-  "auth.taken": "Ese correo ya está registrado.",
-  "auth.tooMany": "Demasiados intentos, espera un momento.",
-  "auth.signOut": "Salir",
-
-  // Landing
-  "landing.tagline": "Guiones virales para tu nicho",
-  "landing.title1": "Formatos probados.",
-  "landing.title2": "Guiones en segundos.",
-  "landing.subtitle":
-    "Viraling analiza videos virales, extrae su esqueleto y lo adapta a tu marca: reels, carruseles y stories listos para grabar.",
-  "landing.cta": "Empieza gratis",
-  "landing.cta2": "Ya tengo cuenta",
-  "landing.free": "3 guiones gratis al mes, sin tarjeta",
-  "landing.f1.title": "Biblioteca de formatos virales",
-  "landing.f1.desc":
-    "Formatos extraídos de videos con millones de views, listos para adaptarse a cualquier nicho.",
-  "landing.f2.title": "Guiones con tu voz de marca",
-  "landing.f2.desc":
-    "Un cuestionario de marca alimenta cada guion: tu tono, tu oferta, tu palabra de CTA.",
-  "landing.f3.title": "Listo para grabar",
-  "landing.f3.desc":
-    "Secciones con tiempos, textos en pantalla, 3 portadas y caption con hashtags. Exporta a PDF.",
-
-  // Dashboard
-  "dash.hello": "Hola",
-  "dash.tokens": "Tokens",
-  "dash.plan": "Plan",
-  "dash.role": "Rol",
-  "dash.quick": "Acciones rápidas",
-  "dash.generate.title": "Generar guion",
-  "dash.generate.desc": "Elige un formato viral y adáptalo a tu nicho",
-  "dash.extract.title": "Extraer formato",
-  "dash.extract.desc": "Pega un transcript y guarda su esqueleto",
-  "dash.history.title": "Ver historial",
-  "dash.history.desc": "Tus guiones generados por nicho",
-  "dash.recent": "Guiones recientes",
-  "dash.empty": "Todavía no has generado guiones.",
-  "dash.emptyCta": "Genera el primero",
-  "dash.needOnboarding": "Configura tu primer nicho para empezar",
-  "dash.needOnboardingCta": "Empezar onboarding",
-
-  // Onboarding / niche form (8 preguntas, sección 8.1)
-  "onb.title": "Cuéntanos de tu marca",
-  "onb.subtitle":
-    "8 preguntas rápidas. Con esto cada guion sale con tu voz, no genérico.",
-  "onb.name": "Nombre del nicho",
-  "onb.namePh": "Ej. Credit repair en español",
-  "onb.q1": "¿Qué vendes u ofreces?",
-  "onb.q2": "¿Quién es tu cliente ideal y en qué idioma consume?",
-  "onb.q3": "¿Qué transformación logras? (antes / después)",
-  "onb.q4": "¿Cómo hablas: formal, cercano, callejero, técnico?",
-  "onb.q5": "¿Qué NO dirías nunca?",
-  "onb.q6": "¿Cuál es tu palabra de CTA?",
-  "onb.q6Ph": "Ej. CREDITO",
-  "onb.q7": "¿Tienes casos de éxito con números?",
-  "onb.q8": "¿Cuántas veces por semana puedes grabar?",
-  "onb.lang": "Idioma del contenido",
-  "onb.langEs": "Español",
-  "onb.langEn": "Inglés",
-  "onb.next": "Siguiente",
-  "onb.back": "Atrás",
-  "onb.save": "Guardar nicho",
-  "onb.saving": "Guardando...",
-  "onb.step": "Paso",
-  "onb.of": "de",
-  "onb.optional": "Opcional",
-  "onb.skip": "Saltar por ahora",
-  "onb.detail": "¿Quieres agregar detalle? (opcional)",
-  "onb.other": "Otro",
-  // Qué vendes (selección)
-  "onb.sell.services": "Servicios / asesoría",
-  "onb.sell.coaching": "Coaching / mentoría",
-  "onb.sell.digital": "Productos digitales / cursos",
-  "onb.sell.physical": "Productos físicos",
-  "onb.sell.local": "Negocio local",
-  "onb.sell.content": "Solo contenido / marca personal",
-  // Audiencia (selección múltiple)
-  "onb.aud.entrepreneurs": "Emprendedores",
-  "onb.aud.creators": "Creadores de contenido",
-  "onb.aud.professionals": "Profesionales",
-  "onb.aud.families": "Familias / hogar",
-  "onb.aud.latinos": "Latinos en USA",
-  "onb.aud.youth": "Jóvenes / estudiantes",
-  // Tono (selección)
-  "onb.tone.cercano": "Cercano y directo",
-  "onb.tone.formal": "Formal y profesional",
-  "onb.tone.callejero": "Callejero / sin filtro",
-  "onb.tone.tecnico": "Técnico y educativo",
-  "onb.tone.motivacional": "Motivacional",
-  // Frecuencia (selección)
-  "onb.freq.low": "1-2 veces por semana",
-  "onb.freq.mid": "3-4 veces por semana",
-  "onb.freq.high": "5-7 veces por semana",
-  "onb.freq.daily": "Todos los días o más",
-
-  // Niches
-  "niches.title": "Tus nichos",
-  "niches.new": "Nuevo nicho",
-  "niches.edit": "Editar",
-  "niches.delete": "Eliminar",
-  "niches.deleteConfirm":
-    "¿Eliminar este nicho? Se borran también sus guiones y formatos.",
-  "niches.active": "Activo",
-  "niches.empty": "No tienes nichos todavía.",
-  "niches.select": "Nicho",
-
-  // Generate
-  "gen.title": "Generar guion",
-  "gen.subtitle": "Formato viral + tu nicho = guion listo para grabar",
-  "gen.niche": "Nicho",
-  "gen.type": "Tipo de contenido",
-  "gen.type.reel": "Reel",
-  "gen.type.carousel": "Carrusel",
-  "gen.type.story": "Story",
-  "gen.format": "Elige un formato",
-  "gen.formatGlobal": "Global",
-  "gen.formatMine": "Mío",
-  "gen.noFormats": "No hay formatos de este tipo todavía.",
-  "gen.button": "Generar guion",
-  "gen.generating": "Generando con IA...",
-  "gen.cost": "Cuesta 1 token · te quedan",
-  "gen.noTokens": "Sin tokens. Se renuevan cada mes.",
-  "gen.stage1": "Leyendo el formato viral...",
-  "gen.stage2": "Adaptando a tu voz de marca...",
-  "gen.stage3": "Escribiendo guion y portadas...",
-
-  // Script view
-  "script.sections": "Guion por secciones",
-  "script.onScreen": "En pantalla",
-  "script.covers": "Portadas (3 variaciones)",
-  "script.coversHint": "Amarillo solo en palabras de resultado",
-  "script.caption": "Caption",
-  "script.hashtags": "Hashtags",
-  "script.copy": "Copiar",
-  "script.copied": "¡Copiado!",
-  "script.pdf": "Descargar PDF",
-  "script.slide": "Slide",
-  "script.story": "Story",
-  "script.purpose.conexion": "Conexión",
-  "script.purpose.prueba": "Prueba",
-  "script.purpose.producto": "Producto",
-  "script.purpose.cta": "CTA",
-  "script.section.hook": "Hook",
-  "script.section.contexto": "Contexto",
-  "script.section.problema": "Problema",
-  "script.section.solucion": "Solución",
-  "script.section.cta": "CTA",
-
-  // Extract
-  "ext.title": "Extraer formato",
-  "ext.subtitle":
-    "Pega el transcript de un video que te gustó y guarda su esqueleto para usarlo en tu nicho.",
-  "ext.transcript": "Transcript del video",
-  "ext.transcriptPh": "Pega aquí el transcript completo...",
-  "ext.visual": "Descripción visual (opcional)",
-  "ext.visualPh": "Qué se ve en pantalla: cortes, textos, b-roll...",
-  "ext.name": "Nombre del formato (opcional)",
-  "ext.type": "Tipo de contenido",
-  "ext.niche": "Ligarlo a un nicho (opcional)",
-  "ext.none": "Ninguno",
-  "ext.button": "Extraer con IA",
-  "ext.extracting": "Analizando transcript...",
-  "ext.preview": "Esqueleto extraído",
-  "ext.saved": "Guardado en tu biblioteca. Ya puedes usarlo en Generar.",
-  "ext.structure": "Estructura",
-  "ext.rules": "Reglas replicables",
-  "ext.hook": "Tipo de hook",
-  "ext.pacing": "Ritmo",
-  "ext.visualEls": "Elementos visuales",
-  "ext.ctaType": "Tipo de CTA",
-
-  // History
-  "hist.title": "Historial de guiones",
-  "hist.empty": "No hay guiones para este nicho.",
-  "hist.all": "Todos los nichos",
-  "hist.view": "Ver",
-
-  // Admin
-  "admin.title": "Panel admin",
-  "admin.users": "Usuarios",
-  "admin.usersTotal": "Usuarios totales",
-  "admin.users7d": "Nuevos (7 días)",
-  "admin.users30d": "Nuevos (30 días)",
-  "admin.active7d": "Activos (7 días)",
-  "admin.byPlan": "Por plan",
-  "admin.ai": "Consumo de IA",
-  "admin.aiPerDay": "Generaciones por día (últimos 14)",
-  "admin.aiTokens": "Tokens internos consumidos (30 días)",
-  "admin.aiCost": "Costo estimado API (30 días)",
-  "admin.kill": "Kill switch de IA",
-  "admin.killOn": "IA ENCENDIDA",
-  "admin.killOff": "IA APAGADA (mantenimiento)",
-  "admin.killDesc":
-    "Apagado: los endpoints de IA responden 503 con mensaje de mantenimiento.",
-  "admin.library": "Biblioteca global",
-  "admin.newFormat": "Nuevo formato global",
-  "admin.formatList": "Formatos globales",
-  "admin.deactivate": "Desactivar",
-  "admin.activate": "Activar",
-  "admin.search": "Buscar por email...",
-  "admin.grant": "Dar tokens",
-  "admin.revoke": "Quitar tokens",
-  "admin.amount": "Cantidad",
-  "admin.reason": "Razón (obligatoria)",
-  "admin.apply": "Aplicar",
-  "admin.uploadRef": "Capturas de referencia",
-  "admin.publish": "Publicar formato",
-
-  // Common
-  "common.loading": "Cargando...",
-  "common.error": "Algo salió mal, intenta de nuevo",
-  "common.cancel": "Cancelar",
-  "common.save": "Guardar",
-  "common.maintenance": "Generation is under maintenance, please try again later",
-
-  // Errores / 404
-  "error.title": "Algo salió mal",
-  "error.desc":
-    "Ocurrió un error inesperado. Tu trabajo está guardado, intenta de nuevo.",
-  "error.retry": "Reintentar",
-  "error.home": "Ir al inicio",
-  "notfound.title": "Página no encontrada",
-  "notfound.desc": "El enlace no existe o fue movido.",
-
-  // Footer / legal
-  "footer.rights": "Todos los derechos reservados.",
-  "footer.terms": "Términos y Condiciones",
-  "footer.privacy": "Política de Privacidad",
-  "footer.legal": "Al crear una cuenta aceptas nuestros Términos y la Política de Privacidad.",
-} as const;
-
-const en: Record<keyof typeof es, string> = {
+/**
+ * Every user-facing string in the app, in one place.
+ * English is the only supported language.
+ */
+const dict = {
   "nav.dashboard": "Home",
   "nav.generate": "Generate",
   "nav.extract": "Extract",
@@ -333,9 +79,6 @@ const en: Record<keyof typeof es, string> = {
   "onb.q6Ph": "E.g. CREDIT",
   "onb.q7": "Do you have success stories with numbers?",
   "onb.q8": "How many times per week can you record?",
-  "onb.lang": "Content language",
-  "onb.langEs": "Spanish",
-  "onb.langEn": "English",
   "onb.next": "Next",
   "onb.back": "Back",
   "onb.save": "Save niche",
@@ -408,14 +151,14 @@ const en: Record<keyof typeof es, string> = {
   "script.pdf": "Download PDF",
   "script.slide": "Slide",
   "script.story": "Story",
-  "script.purpose.conexion": "Connection",
-  "script.purpose.prueba": "Proof",
-  "script.purpose.producto": "Product",
+  "script.purpose.connection": "Connection",
+  "script.purpose.proof": "Proof",
+  "script.purpose.product": "Product",
   "script.purpose.cta": "CTA",
   "script.section.hook": "Hook",
-  "script.section.contexto": "Context",
-  "script.section.problema": "Problem",
-  "script.section.solucion": "Solution",
+  "script.section.context": "Context",
+  "script.section.problem": "Problem",
+  "script.section.solution": "Solution",
   "script.section.cta": "CTA",
 
   "ext.title": "Extract format",
@@ -492,17 +235,11 @@ const en: Record<keyof typeof es, string> = {
   "footer.terms": "Terms & Conditions",
   "footer.privacy": "Privacy Policy",
   "footer.legal": "By creating an account you accept our Terms and Privacy Policy.",
-};
+} as const;
 
-export type DictKey = keyof typeof es;
+export type DictKey = keyof typeof dict;
 export type Dict = Record<DictKey, string>;
 
-const dictionaries: Record<Lang, Dict> = { es, en };
-
-export function getDict(lang: Lang): Dict {
-  return dictionaries[lang] ?? dictionaries.en;
-}
-
-export function normalizeLang(value: string | undefined): Lang {
-  return value === "es" ? "es" : "en";
+export function getDict(): Dict {
+  return dict;
 }

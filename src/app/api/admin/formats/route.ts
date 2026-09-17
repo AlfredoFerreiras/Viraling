@@ -16,7 +16,7 @@ const publishSchema = z.object({
   performanceNotes: z.string().max(2000).optional(),
 });
 
-/** Lista de formatos globales (incluye inactivos, para gestionarlos). */
+/** List of global formats (includes inactive ones, so they can be managed). */
 export async function GET() {
   const guard = await adminGuard();
   if (!guard.ok) return guard.response;

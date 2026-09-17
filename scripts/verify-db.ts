@@ -1,6 +1,6 @@
 /**
- * Verifica que las tablas de Fase 1 existen, que RLS está activo y
- * forzado en todas, y lista las policies creadas.
+ * Verifies that the Phase 1 tables exist, that RLS is enabled and
+ * forced on all of them, and lists the policies created.
  * Uso: npm run db:verify
  */
 import { config } from "dotenv";
@@ -24,7 +24,7 @@ const EXPECTED_TABLES = [
 async function main() {
   const url = process.env.ADMIN_DATABASE_URL ?? process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL no está definida (revisa .env.local)");
+    throw new Error("DATABASE_URL is not defined (check .env.local)");
   }
   const pool = new Pool({ connectionString: url });
 
@@ -68,10 +68,10 @@ async function main() {
 
   await pool.end();
   if (!ok) {
-    console.error("\nVerificación FALLIDA");
+    console.error("\nVERIFICATION FAILED");
     process.exit(1);
   }
-  console.log("\nVerificación OK");
+  console.log("\nVERIFICATION OK");
 }
 
 main().catch((err) => {

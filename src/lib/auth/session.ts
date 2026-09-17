@@ -14,9 +14,9 @@ import {
 export type SessionUser = typeof users.$inferSelect;
 
 /**
- * Crea una sesión para el usuario y devuelve el token en claro (va a la
- * cookie) y su expiración. Aprovecha para limpiar sesiones vencidas del
- * mismo usuario.
+ * Creates a session for the user and returns the plaintext token (it goes
+ * into the cookie) and its expiry. It also takes the chance to clean expired
+ * sessions of the same user.
  */
 export async function createSession(
   userId: string,
@@ -35,8 +35,8 @@ export async function createSession(
 }
 
 /**
- * Valida un token: existe, no venció, y devuelve el usuario. Si la
- * sesión está por vencer la extiende (sliding expiration).
+ * Validates a token: exists, not expired, and returns the user. If the
+ * session is close to expiring it extends it (sliding expiration).
  */
 export async function validateSessionToken(
   token: string,
@@ -70,14 +70,14 @@ export async function invalidateSession(token: string): Promise<void> {
   await withServiceContext((tx) => tx.delete(sessions).where(eq(sessions.id, id)));
 }
 
-/** Cierra todas las sesiones de un usuario (cambio de contraseña, admin). */
+/** Closes every session of a user (password change, admin). */
 export async function invalidateUserSessions(userId: string): Promise<void> {
   await withServiceContext((tx) =>
     tx.delete(sessions).where(eq(sessions.userId, userId)),
   );
 }
 
-// ---------- Cookie (solo desde route handlers / server actions) ----------
+// ---------- Cookie (only from route handlers / server actions) ----------
 
 export async function setSessionCookie(token: string, expiresAt: Date): Promise<void> {
   const store = await cookies();

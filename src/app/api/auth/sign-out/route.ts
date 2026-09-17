@@ -5,7 +5,7 @@ import {
   readSessionCookie,
 } from "@/lib/auth/session";
 
-/** POST /api/auth/sign-out: borra la sesión en DB y la cookie. */
+/** POST /api/auth/sign-out: deletes the DB session and the cookie. */
 export async function POST() {
   const token = await readSessionCookie();
   if (token) await invalidateSession(token);

@@ -6,7 +6,7 @@ import { useState, type FormEvent } from "react";
 import { useI18n } from "./i18n-provider";
 import { Button, Card, Input, Label, Spinner } from "./ui";
 
-/** Destino tras autenticarse: solo rutas internas, nunca URLs externas. */
+/** Destination after authenticating: internal routes only, never external URLs. */
 function safeNext(value: string | null): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
   return value;

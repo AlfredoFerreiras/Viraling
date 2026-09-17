@@ -1,29 +1,23 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { Dict, DictKey, Lang } from "@/lib/i18n/dictionaries";
+import type { Dict, DictKey } from "@/lib/i18n/dictionaries";
 
-const I18nContext = createContext<{ lang: Lang; dict: Dict } | null>(null);
+const I18nContext = createContext<Dict | null>(null);
 
 export function I18nProvider({
-  lang,
   dict,
   children,
 }: {
-  lang: Lang;
   dict: Dict;
   children: React.ReactNode;
 }) {
-  return (
-    <I18nContext.Provider value={{ lang, dict }}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={dict}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
-  const ctx = useContext(I18nContext);
-  if (!ctx) throw new Error("useI18n debe usarse dentro de I18nProvider");
-  const t = (key: DictKey) => ctx.dict[key] ?? key;
-  return { t, lang: ctx.lang };
+  const dict = useContext(I18nContext);
+  if (!dict) throw new Error("useI18n must be used inside I18nProvider");
+  const t = (key: DictKey) => dict[key] ?? key;
+  return { t };
 }

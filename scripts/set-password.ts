@@ -1,9 +1,9 @@
 /**
- * Fija (o crea) la contraseña de un usuario por email. Si el usuario no
- * existe, lo crea con los defaults del schema (role user, plan free,
- * 3 créditos). Cierra todas sus sesiones abiertas.
+ * Sets (or creates) a user password by email. If the user does not
+ * exist, it is created with the schema defaults (role user, plan free,
+ * 3 credits). Closes all of their open sessions.
  *
- * Uso: npm run user:set-password -- correo@ejemplo.com "contraseña"
+ * Usage: npm run user:set-password -- someone@example.com "a password"
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -15,7 +15,7 @@ async function main() {
     process.exit(1);
   }
   if (password.length < 8) {
-    console.error("La contraseña debe tener al menos 8 caracteres");
+    console.error("The password must be at least 8 characters long");
     process.exit(1);
   }
   const email = rawEmail.trim().toLowerCase();
@@ -53,8 +53,8 @@ async function main() {
 
   console.log(
     result.created
-      ? `Usuario ${email} creado con contraseña (${result.id})`
-      : `Contraseña actualizada para ${email} (${result.id}), sesiones cerradas`,
+      ? `User ${email} created with a password (${result.id})`
+      : `Password updated for ${email} (${result.id}), sessions closed`,
   );
   process.exit(0);
 }

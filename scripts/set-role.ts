@@ -1,6 +1,6 @@
 /**
- * Asigna un rol a un usuario por email (el rol vive en users.role, DB).
- * Uso: npm run user:set-role -- correo@ejemplo.com admin
+ * Assigns a role to a user by email (the role lives in users.role, in the DB).
+ * Usage: npm run user:set-role -- someone@example.com admin
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
@@ -30,7 +30,7 @@ async function main() {
   );
   await pool.end();
   if (res.rowCount === 0) {
-    console.error(`No existe usuario con email ${email}`);
+    console.error(`No user exists with email ${email}`);
     process.exit(1);
   }
   console.log(`OK: ${res.rows[0].email} ahora es ${res.rows[0].role}`);

@@ -10,7 +10,7 @@ const querySchema = z.object({
   contentType: contentTypeSchema.optional(),
 });
 
-/** Galería de formatos: globales + propios (la policy formats_read filtra). */
+/** Format gallery: global + own (the formats_read policy filters). */
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

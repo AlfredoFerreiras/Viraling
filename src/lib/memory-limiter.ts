@@ -1,9 +1,9 @@
 /**
- * Sliding window en memoria. Es el respaldo del rate limiting cuando
- * Upstash no está configurado o no responde: protege por instancia del
- * servidor (no entre instancias), suficiente para que una caída de Redis
- * nunca tumbe la app. El tope duro de costo sigue siendo el ledger de
- * créditos.
+ * In-memory sliding window. This is the rate limiting fallback when
+ * Upstash is not configured or does not respond: it protects per server
+ * instance (not across instances), which is enough that a Redis outage
+ * never takes the app down. The hard cost ceiling is still the credit
+ * ledger.
  */
 export type LimitResult = { success: boolean; reset: number };
 

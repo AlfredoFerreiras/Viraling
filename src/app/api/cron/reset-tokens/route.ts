@@ -2,9 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { monthlyReset } from "@/lib/tokens";
 
 /**
- * Cron mensual (vercel.json: día 1 a las 00:00 UTC): resetea free a 3
- * y pro a 60, registrando monthly_reset en el ledger.
- * Vercel manda Authorization: Bearer CRON_SECRET automáticamente.
+ * Monthly cron (vercel.json: day 1 at 00:00 UTC): resets free to 3
+ * and pro to 60, recording monthly_reset in the ledger.
+ * Vercel sends Authorization: Bearer CRON_SECRET automatically.
  */
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization");

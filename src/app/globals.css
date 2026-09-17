@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Dark mode por defecto (bloque 6). Acento amber = amarillo de las portadas. */
+/* Dark mode by default (block 6). Amber accent = the yellow used on covers. */
 :root {
   --background: #09090b;
   --foreground: #fafafa;

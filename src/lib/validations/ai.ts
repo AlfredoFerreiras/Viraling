@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { contentTypeSchema, uuidSchema } from "./index";
 
-// ---------- Inputs de los endpoints ----------
+// ---------- Endpoint inputs ----------
 
 export const extractFormatInput = z.object({
   transcript: z.string().min(50).max(15000),
@@ -17,9 +17,9 @@ export const generateScriptInput = z.object({
   contentType: contentTypeSchema,
 });
 
-// ---------- Salidas de Claude (sección 9 de CLAUDE.md) ----------
+// ---------- Claude outputs (section 9 of CLAUDE.md) ----------
 
-// 9.1 Extractor: skeleton del formato
+// 9.1 Extractor: the format skeleton
 export const skeletonOutput = z.object({
   name: z.string().min(1).max(120),
   structure: z
@@ -40,7 +40,7 @@ export const skeletonOutput = z.object({
 });
 export type SkeletonOutput = z.infer<typeof skeletonOutput>;
 
-// 9.2 Generador: la salida cambia según contentType (sección 8.3)
+// 9.2 Generator: the output changes with contentType (section 8.3)
 
 const coverSchema = z.object({
   white_text: z.string(),
@@ -53,12 +53,12 @@ const scriptBase = z.object({
   hashtags: z.array(z.string()).min(3).max(30),
 });
 
-// Reel: 5 secciones con tiempos + textos en pantalla + 3 portadas
+// Reel: 5 sections with times + on screen text + 3 covers
 export const reelOutput = scriptBase.extend({
   sections: z
     .array(
       z.object({
-        section: z.enum(["hook", "contexto", "problema", "solucion", "cta"]),
+        section: z.enum(["hook", "context", "problem", "solution", "cta"]),
         time_start: z.number().min(0),
         time_end: z.number().min(0),
         spoken: z.string(),
@@ -69,7 +69,7 @@ export const reelOutput = scriptBase.extend({
   covers: z.array(coverSchema).length(3),
 });
 
-// Carrusel: 7 a 10 slides + slide final de CTA (viene incluido en el array)
+// Carousel: 7 to 10 slides + final CTA slide (included in the array)
 export const carouselOutput = scriptBase.extend({
   sections: z
     .array(
@@ -85,13 +85,13 @@ export const carouselOutput = scriptBase.extend({
   covers: z.array(coverSchema).length(3),
 });
 
-// Story: secuencia de 3 a 5 stories con propósito por story
+// Story: sequence of 3 to 5 stories with a purpose per story
 export const storyOutput = scriptBase.extend({
   sections: z
     .array(
       z.object({
         story: z.number().int().min(1),
-        purpose: z.enum(["conexion", "prueba", "producto", "cta"]),
+        purpose: z.enum(["connection", "proof", "product", "cta"]),
         spoken: z.string(),
         on_screen: z.array(z.string()),
       }),

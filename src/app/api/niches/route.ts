@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { parseBody } from "@/lib/validations";
 import { nicheInput } from "@/lib/validations/niches";
 
-/** Límite de nichos por plan (sección 10). */
+/** Niche limit per plan (section 10). */
 const NICHE_LIMITS: Record<string, number> = {
   free: 1,
   pro: 3,

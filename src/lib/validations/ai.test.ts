@@ -11,21 +11,21 @@ import {
 const UUID = "0f1e2d3c-4b5a-4f7e-8d9c-0a1b2c3d4e5f";
 
 const base = {
-  title: "Guion",
+  title: "Script",
   caption: "Caption",
   hashtags: ["#a", "#b", "#c"],
 };
 
-const cover = { white_text: "Cómo pasar de", yellow_text: "0 a 10k" };
+const cover = { white_text: "How to go from", yellow_text: "0 a 10k" };
 const threeCovers = [cover, cover, cover];
 
 function reelSections() {
-  return ["hook", "contexto", "problema", "solucion", "cta"].map((section, i) => ({
+  return ["hook", "context", "problem", "solution", "cta"].map((section, i) => ({
     section,
     time_start: i * 6,
     time_end: i * 6 + 6,
-    spoken: "texto",
-    on_screen: ["texto"],
+    spoken: "text",
+    on_screen: ["text"],
   }));
 }
 
@@ -81,8 +81,8 @@ describe("skeletonOutput", () => {
       { section: "cta", purpose: "p", relative_duration: "10%" },
     ],
     hook_type: "pregunta",
-    pacing: "rápido",
-    visual_elements: ["texto"],
+    pacing: "fast",
+    visual_elements: ["text"],
     cta_type: "comentario",
     replicable_rules: ["regla"],
   };
@@ -134,7 +134,7 @@ describe("script outputs by type", () => {
   });
 
   it("story needs 3 to 5 stories with a known purpose and allows null covers", () => {
-    const stories = (n: number, purpose = "conexion") =>
+    const stories = (n: number, purpose = "connection") =>
       Array.from({ length: n }, (_, i) => ({
         story: i + 1,
         purpose,

@@ -1,17 +1,17 @@
 -- =============================================================
--- RLS · Fase 1 (sección 6 de CLAUDE.md)
+-- RLS - Phase 1 (section 6 of CLAUDE.md)
 --
--- Patrón: la app setea app.current_user_id y app.current_role por
--- transacción (ver src/db/context.ts) y las policies filtran por eso.
+-- Pattern: the app sets app.current_user_id and app.current_role per
+-- transaction (see src/db/context.ts) and the policies filter on that.
 --
--- Notas de implementación:
---  * FORCE ROW LEVEL SECURITY es obligatorio: la app se conecta a Neon
---    como rol dueño de las tablas y Postgres exime al dueño de RLS
---    salvo que se fuerce.
---  * current_setting(..., true) devuelve NULL si la variable no está
---    seteada (en vez de error), y nullif(...,'') evita el error de
---    castear '' a uuid. Sin contexto seteado, ninguna policy pasa.
---  * Idempotente: drop policy if exists antes de cada create.
+-- Implementation notes:
+--  * FORCE ROW LEVEL SECURITY is mandatory: the app connects to Neon
+--    as the role that owns the tables, and Postgres exempts the owner
+--    from RLS unless it is forced.
+--  * current_setting(..., true) returns NULL when the variable is not
+--    set (instead of erroring), and nullif(...,'') avoids the error of
+--    casting '' to uuid. With no context set, no policy passes.
+--  * Idempotent: drop policy if exists before each create.
 -- =============================================================
 
 -- ---------- USERS ----------
@@ -42,14 +42,14 @@ create policy niches_admin on niches
 alter table formats enable row level security;
 alter table formats force row level security;
 
--- lectura: globales + propios + admin
+-- read: global + own + admin
 drop policy if exists formats_read on formats;
 create policy formats_read on formats for select
   using (owner_scope = 'global'
      or user_id = nullif(current_setting('app.current_user_id', true), '')::uuid
      or current_setting('app.current_role', true) = 'admin');
 
--- escritura: solo los propios (o admin, que escribe los globales)
+-- write: own only (or admin, who writes the global ones)
 drop policy if exists formats_owner_write on formats;
 create policy formats_owner_write on formats
   using (user_id = nullif(current_setting('app.current_user_id', true), '')::uuid);
@@ -71,10 +71,10 @@ create policy scripts_admin on scripts
   using (current_setting('app.current_role', true) = 'admin');
 
 -- ---------- TOKEN_TRANSACTIONS ----------
--- El user solo LEE su ledger. El insert de sus propios movimientos lo
--- hacen consumeTokens/grantTokens dentro de su transacción, por eso hay
--- policy de insert restringida a su propio user_id. Update/delete: nadie
--- salvo admin (un ledger no se edita).
+-- The user only READS their ledger. Inserts of their own movements are
+-- made by consumeTokens/grantTokens inside their transaction, which is why
+-- there is an insert policy restricted to their own user_id. Update/delete:
+-- nobody but admin (a ledger is never edited).
 alter table token_transactions enable row level security;
 alter table token_transactions force row level security;
 

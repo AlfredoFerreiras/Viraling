@@ -31,15 +31,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { lang, dict } = await getServerDict();
+  const { dict } = await getServerDict();
 
   return (
     <html
-      lang={lang}
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <I18nProvider lang={lang} dict={dict}>
+        <I18nProvider dict={dict}>
           <SiteHeader />
           {children}
           <SiteFooter />
