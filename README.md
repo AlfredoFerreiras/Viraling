@@ -38,7 +38,7 @@ This is Phase 1 of a four-phase plan (see [CLAUDE.md](CLAUDE.md)). Calendar, CRM
 | Rate limiting | Upstash Redis with in-memory fallback |
 | Storage | Cloudflare R2 with presigned URLs |
 | PDF | @react-pdf/renderer |
-| Hosting | Vercel (with Vercel Cron for monthly resets) |
+| Hosting | Netlify (Next.js runtime; a scheduled function drives the monthly reset) |
 
 ## Security design
 
@@ -104,6 +104,31 @@ To create a user or reset a password without the UI (useful for the admin or a d
 ```bash
 npm run user:set-password -- someone@example.com "a long password"
 ```
+
+## Deploying to Netlify
+
+[netlify.toml](netlify.toml) holds the build config. The Next.js adapter is deliberately left undeclared so Netlify installs its current one on each build, which is what keeps new Next releases working.
+
+```bash
+npx netlify login
+npx netlify init      # link or create the site
+npx netlify deploy --prod
+```
+
+Set these in the Netlify site's environment variables before the first build:
+
+| Variable | Notes |
+| --- | --- |
+| `DATABASE_URL` | Neon pooled connection string, as the `app_user` role |
+| `ANTHROPIC_API_KEY` | Server only. Never exposed to the client |
+| `NEXT_PUBLIC_APP_URL` | The site's own URL. Drives the CORS allowlist in [src/proxy.ts](src/proxy.ts), so a wrong value makes the API reject every request with 403 |
+| `CRON_SECRET` | Shared by the scheduled function and the cron route |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Optional. Without them rate limits fall back to per-instance memory |
+
+Two notes specific to Netlify:
+
+- **The monthly reset.** Netlify cannot schedule an App Router route handler, so [netlify/functions/reset-tokens.mts](netlify/functions/reset-tokens.mts) carries the schedule and calls `/api/cron/reset-tokens` with the same Bearer `CRON_SECRET`. The reset logic itself stays in the route.
+- **`.npmrc` is not committed.** It pins npm's `script-shell` to Windows Git Bash for local development, which breaks installs on Linux builders.
 
 ## Checks
 

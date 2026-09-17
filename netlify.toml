@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The Next.js adapter (OpenNext) is intentionally NOT declared here and NOT a
+# dependency. Netlify detects Next.js and installs its current adapter on every
+# build; pinning it is what breaks support for new Next releases.
+
+# Monthly token reset, replacing the Vercel cron in vercel.json.
+# App Router route handlers cannot be scheduled directly, so the schedule
+# lives on a Netlify function that calls the route with CRON_SECRET.
+[functions."reset-tokens"]
+  schedule = "0 0 1 * *"
