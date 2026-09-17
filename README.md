@@ -110,12 +110,15 @@ npm run user:set-password -- someone@example.com "a long password"
 [netlify.toml](netlify.toml) holds the build config. The Next.js adapter is deliberately left undeclared so Netlify installs its current one on each build, which is what keeps new Next releases working.
 
 ```bash
-npx netlify login
-npx netlify init      # link or create the site
+npx netlify login                                    # opens a browser
+npx netlify init                                     # link or create the site
+npm run netlify:env -- https://your-site.netlify.app # push env vars from .env.local
 npx netlify deploy --prod
 ```
 
-Set these in the Netlify site's environment variables before the first build:
+`netlify:env` copies the variables below out of your `.env.local` into the linked site, so no secret is retyped into a web form. It deliberately never pushes `ADMIN_DATABASE_URL`, which is the owner role used by local migrations only.
+
+The variables the deployed app needs:
 
 | Variable | Notes |
 | --- | --- |
