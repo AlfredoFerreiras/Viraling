@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth/token";
+import { isCrossOrigin } from "@/lib/origins";
 
 /**
  * App proxy (middleware):
@@ -23,23 +24,13 @@ function isPublic(pathname: string): boolean {
   return PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
 }
 
-function allowedOrigins(): string[] {
-  const origins = ["http://localhost:3000"];
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    origins.push(process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, ""));
-  }
-  return origins;
-}
-
 /**
  * CORS (section 7.1): if an Origin header arrives and is not allowlisted,
  * return 403 before any logic. Together with the sameSite=lax cookie this
- * also covers CSRF on API POSTs.
+ * also covers CSRF on API POSTs. The allowlist lives in @/lib/origins.
  */
 function corsViolation(request: NextRequest): boolean {
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  return !allowedOrigins().includes(origin.replace(/\/$/, ""));
+  return isCrossOrigin(request.headers.get("origin"));
 }
 
 /**

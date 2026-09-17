@@ -124,7 +124,7 @@ The variables the deployed app needs:
 | --- | --- |
 | `DATABASE_URL` | Neon pooled connection string, as the `app_user` role |
 | `ANTHROPIC_API_KEY` | Server only. Never exposed to the client |
-| `NEXT_PUBLIC_APP_URL` | The site's own URL. Drives the CORS allowlist in [src/proxy.ts](src/proxy.ts), so a wrong value makes the API reject every request with 403 |
+| `NEXT_PUBLIC_APP_URL` | The site's own URL, for the CORS allowlist in [src/lib/origins.ts](src/lib/origins.ts). Netlify's own `URL` and `DEPLOY_PRIME_URL` are trusted as well, so previews work and a missing value is not fatal. Note it is a `NEXT_PUBLIC_` var, which Next inlines at build time: changing it needs a rebuild, not just a redeploy |
 | `CRON_SECRET` | Shared by the scheduled function and the cron route |
 | `DEMO_EMAIL` | The shared demo account. Set it to enable the one click demo button; leave it empty and the demo route 404s and the buttons disappear |
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Optional. Without them rate limits fall back to per-instance memory |
