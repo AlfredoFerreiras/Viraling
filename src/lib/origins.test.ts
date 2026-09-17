@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { allowedOrigins, isCrossOrigin } from "./origins";
+import { allowedOrigins, isCrossOrigin, selfOrigin } from "./origins";
 
 const env = (over: Record<string, string | undefined>) =>
   over as unknown as NodeJS.ProcessEnv;
+
+const headers = (h: Record<string, string>) => ({
+  get: (name: string) => h[name.toLowerCase()] ?? null,
+});
 
 describe("allowedOrigins", () => {
   it("always allows local development", () => {
@@ -10,25 +14,15 @@ describe("allowedOrigins", () => {
   });
 
   it("allows the configured app url", () => {
-    const origins = allowedOrigins(env({ NEXT_PUBLIC_APP_URL: "https://app.example" }));
-    expect(origins).toContain("https://app.example");
+    expect(allowedOrigins(env({ NEXT_PUBLIC_APP_URL: "https://app.example" }))).toContain(
+      "https://app.example",
+    );
   });
 
   it("trims a trailing slash so the comparison matches an Origin header", () => {
-    const origins = allowedOrigins(env({ NEXT_PUBLIC_APP_URL: "https://app.example/" }));
-    expect(origins).toContain("https://app.example");
-  });
-
-  it("trusts the host's own url, so a missing app url is not fatal", () => {
-    const origins = allowedOrigins(env({ URL: "https://viraling.netlify.app" }));
-    expect(origins).toContain("https://viraling.netlify.app");
-  });
-
-  it("allows preview deploys, which get a new hostname each build", () => {
-    const origins = allowedOrigins(
-      env({ DEPLOY_PRIME_URL: "https://deploy-preview-3--viraling.netlify.app" }),
+    expect(allowedOrigins(env({ NEXT_PUBLIC_APP_URL: "https://app.example/" }))).toContain(
+      "https://app.example",
     );
-    expect(origins).toContain("https://deploy-preview-3--viraling.netlify.app");
   });
 
   it("adds the scheme to VERCEL_URL, which ships without one", () => {
@@ -51,26 +45,77 @@ describe("allowedOrigins", () => {
   });
 });
 
-describe("isCrossOrigin", () => {
-  it("allows a request with no Origin header", () => {
-    expect(isCrossOrigin(null, env({}))).toBe(false);
+describe("selfOrigin", () => {
+  it("prefers the forwarded host, which is what the browser used", () => {
+    expect(
+      selfOrigin(
+        headers({
+          "x-forwarded-host": "viraling.netlify.app",
+          "x-forwarded-proto": "https",
+          host: "internal-3.local",
+        }),
+      ),
+    ).toBe("https://viraling.netlify.app");
   });
 
-  it("allows the site's own origin", () => {
-    expect(isCrossOrigin("https://a.example", env({ URL: "https://a.example" }))).toBe(
-      false,
+  it("falls back to the host header", () => {
+    expect(selfOrigin(headers({ host: "viraling.netlify.app" }))).toBe(
+      "https://viraling.netlify.app",
     );
   });
 
+  it("takes the first entry when proxies chain the header", () => {
+    expect(
+      selfOrigin(
+        headers({
+          "x-forwarded-host": "viraling.netlify.app, internal.local",
+          "x-forwarded-proto": "https, http",
+        }),
+      ),
+    ).toBe("https://viraling.netlify.app");
+  });
+
+  it("keeps http for local development", () => {
+    expect(
+      selfOrigin(headers({ host: "localhost:3000", "x-forwarded-proto": "http" })),
+    ).toBe("http://localhost:3000");
+  });
+
+  it("returns null with no host to trust", () => {
+    expect(selfOrigin(headers({}))).toBeNull();
+  });
+});
+
+describe("isCrossOrigin", () => {
+  it("allows a request with no Origin header", () => {
+    expect(isCrossOrigin(null, "https://a.example", env({}))).toBe(false);
+  });
+
+  it("allows the site's own host with no env configured at all", () => {
+    expect(isCrossOrigin("https://a.example", "https://a.example", env({}))).toBe(false);
+  });
+
   it("blocks a foreign origin", () => {
-    expect(isCrossOrigin("https://evil.example", env({ URL: "https://a.example" }))).toBe(
+    expect(isCrossOrigin("https://evil.example", "https://a.example", env({}))).toBe(true);
+  });
+
+  it("blocks a lookalike hostname", () => {
+    expect(isCrossOrigin("https://a.example.evil.com", "https://a.example", env({}))).toBe(
       true,
     );
   });
 
-  it("blocks a lookalike hostname", () => {
+  it("blocks a scheme downgrade", () => {
+    expect(isCrossOrigin("http://a.example", "https://a.example", env({}))).toBe(true);
+  });
+
+  it("still honours the env allowlist when the host differs", () => {
     expect(
-      isCrossOrigin("https://a.example.evil.com", env({ URL: "https://a.example" })),
-    ).toBe(true);
+      isCrossOrigin(
+        "https://app.example",
+        "https://internal.local",
+        env({ NEXT_PUBLIC_APP_URL: "https://app.example" }),
+      ),
+    ).toBe(false);
   });
 });

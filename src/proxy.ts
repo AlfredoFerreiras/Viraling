@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth/token";
-import { isCrossOrigin } from "@/lib/origins";
+import { isCrossOrigin, selfOrigin } from "@/lib/origins";
 
 /**
  * App proxy (middleware):
@@ -30,7 +30,10 @@ function isPublic(pathname: string): boolean {
  * also covers CSRF on API POSTs. The allowlist lives in @/lib/origins.
  */
 function corsViolation(request: NextRequest): boolean {
-  return isCrossOrigin(request.headers.get("origin"));
+  return isCrossOrigin(
+    request.headers.get("origin"),
+    selfOrigin(request.headers) ?? request.nextUrl.origin,
+  );
 }
 
 /**

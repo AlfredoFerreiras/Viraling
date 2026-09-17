@@ -1,18 +1,25 @@
 /**
- * The CORS allowlist for API routes.
+ * The CORS / CSRF allowlist for API routes.
  *
- * NEXT_PUBLIC_APP_URL is the explicit setting, but it is a NEXT_PUBLIC_ var,
- * which Next inlines at build time. Setting it in the host's dashboard after
- * a build has already run therefore changes nothing until the next build, and
- * the failure it produces is nasty: pages render fine while every POST comes
- * back 403.
+ * The rule that actually matters is the first one: a request is same-origin
+ * when its Origin header equals the host the browser used to reach us. That
+ * needs no configuration, which is the point. Every env driven version of
+ * this check has failed in a different way:
  *
- * So the host's own url variables are trusted too. They are plain runtime env
- * vars, they are set by the platform rather than by a request, and they also
- * cover deploy previews, which have a different hostname on every build.
- *   - URL              Netlify: the site's primary url
- *   - DEPLOY_PRIME_URL Netlify: this branch/preview deploy's url
- *   - VERCEL_URL       Vercel: the deployment host, without a scheme
+ *   - NEXT_PUBLIC_APP_URL is inlined by Next at build time, so setting it in
+ *     a host dashboard does nothing until the next build.
+ *   - Netlify's URL and DEPLOY_PRIME_URL exist during the build but are not
+ *     exposed to the Next server functions at runtime.
+ *
+ * Both failures look identical from outside: pages render, every POST 403s.
+ *
+ * Comparing Origin to the request's own host is also the correct CSRF check.
+ * A cross-site page cannot make the victim's browser lie about Origin, and
+ * the host is whatever domain the victim actually visited, so a forged
+ * cross-site POST always mismatches.
+ *
+ * The env vars are still honoured, for origins that are legitimately not the
+ * request host, such as a separate front end during local development.
  */
 export function allowedOrigins(env: NodeJS.ProcessEnv = process.env): string[] {
   const origins = new Set<string>(["http://localhost:3000"]);
@@ -32,11 +39,30 @@ export function allowedOrigins(env: NodeJS.ProcessEnv = process.env): string[] {
   return [...origins];
 }
 
-/** True when an Origin header is present and is not on the allowlist. */
+/**
+ * The origin the browser actually used, rebuilt from the forwarding headers
+ * the platform sets. Returns null when there is no host header to trust.
+ */
+export function selfOrigin(headers: {
+  get(name: string): string | null;
+}): string | null {
+  const host = headers.get("x-forwarded-host") ?? headers.get("host");
+  if (!host) return null;
+  // x-forwarded-* can carry a list when several proxies are chained.
+  const firstHost = host.split(",")[0]!.trim();
+  if (!firstHost) return null;
+  const proto = (headers.get("x-forwarded-proto") ?? "https").split(",")[0]!.trim();
+  return `${proto}://${firstHost}`;
+}
+
+/** True when an Origin header is present and is neither our own host nor allowlisted. */
 export function isCrossOrigin(
   origin: string | null,
+  self: string | null = null,
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
   if (!origin) return false;
-  return !allowedOrigins(env).includes(origin.replace(/\/$/, ""));
+  const normalised = origin.replace(/\/$/, "");
+  if (self && normalised === self.replace(/\/$/, "")) return false;
+  return !allowedOrigins(env).includes(normalised);
 }
