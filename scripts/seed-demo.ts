@@ -8,6 +8,9 @@
  *     the movement in the ledger.
  *  3. Creates a sample niche with a full brand voice if the account has
  *     none, so it lands directly on the dashboard.
+ *  4. Inserts one reel, one carousel and one story so History and the
+ *     script pages are populated for a visitor. Written by hand, so
+ *     seeding never spends Anthropic credits.
  *
  * Idempotent: run it again to "recharge" the demo.
  *
@@ -15,6 +18,8 @@
  */
 import { config } from "dotenv";
 config({ path: [".env.local", ".env"] });
+
+import { DEMO_SCRIPTS } from "./demo-content";
 
 const DEMO_NICHE = {
   name: "Credit repair coaching",
@@ -54,7 +59,7 @@ async function main() {
   neonConfig.webSocketConstructor = ws;
 
   const { withServiceContext } = await import("../src/db/context");
-  const { niches, users } = await import("../src/db/schema");
+  const { formats, niches, scripts, users } = await import("../src/db/schema");
   const { adminAdjustTokens } = await import("../src/lib/tokens");
   const { eq } = await import("drizzle-orm");
 
@@ -97,6 +102,51 @@ async function main() {
     console.log(`  niche created: ${DEMO_NICHE.name}`);
   } else {
     console.log("  account already has niches, sample niche not created");
+  }
+
+  // Sample scripts, so History and the script pages are never empty.
+  const [nicheRow] = await withServiceContext((tx) =>
+    tx.select({ id: niches.id }).from(niches).where(eq(niches.userId, user.id)).limit(1),
+  );
+  const existingScripts = await withServiceContext((tx) =>
+    tx.select({ id: scripts.id }).from(scripts).where(eq(scripts.userId, user.id)).limit(1),
+  );
+
+  if (!nicheRow) {
+    console.log("  no niche to attach sample scripts to, skipped");
+  } else if (existingScripts.length > 0) {
+    console.log("  account already has scripts, samples not created");
+  } else {
+    const globalFormats = await withServiceContext((tx) =>
+      tx
+        .select({ id: formats.id, contentType: formats.contentType })
+        .from(formats)
+        .where(eq(formats.ownerScope, "global")),
+    );
+
+    let created = 0;
+    for (const demo of DEMO_SCRIPTS) {
+      const format = globalFormats.find((f) => f.contentType === demo.contentType);
+      if (!format) {
+        console.log(`  no global ${demo.contentType} format, skipped "${demo.title}"`);
+        continue;
+      }
+      await withServiceContext((tx) =>
+        tx.insert(scripts).values({
+          userId: user.id,
+          nicheId: nicheRow.id,
+          formatId: format.id,
+          contentType: demo.contentType,
+          title: demo.title,
+          sections: demo.sections,
+          covers: demo.covers,
+          caption: demo.caption,
+          hashtags: demo.hashtags,
+        }),
+      );
+      created += 1;
+    }
+    console.log(`  sample scripts created: ${created}`);
   }
 
   console.log("\nDemo ready.");

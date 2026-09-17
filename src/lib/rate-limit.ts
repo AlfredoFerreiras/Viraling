@@ -92,7 +92,7 @@ export function rateLimitResponse(resetAt: number): NextResponse {
 }
 
 /**
- * Aplica ambos limiters a un endpoint de IA. Devuelve null si pasa,
+ * Applies both limiters to an AI endpoint. Returns null when it passes,
  * or the 429 response ready to be returned.
  *
  * Use at the top of the handler (after the session, before everything else):

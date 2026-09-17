@@ -51,13 +51,13 @@ export const niches = pgTable("niches", {
 export const formats = pgTable("formats", {
   id: uuid("id").primaryKey().defaultRandom(),
   ownerScope: text("owner_scope").notNull().default("global"), // global (admin) | user
-  userId: uuid("user_id").references(() => users.id), // null si es global
+  userId: uuid("user_id").references(() => users.id), // null when global
   nicheId: uuid("niche_id").references(() => niches.id), // for formats extracted by the user
-  name: text("name").notNull(), // "Tier List", "Funciona / No Funciona"
+  name: text("name").notNull(), // "Tier List", "Works / Doesn't Work"
   contentType: text("content_type").notNull(), // reel | carousel | story
-  skeleton: jsonb("skeleton").notNull(), // secciones, ritmo, visual, hook_type, cta_type
+  skeleton: jsonb("skeleton").notNull(), // sections, pacing, visuals, hook_type, cta_type
   sourceTranscript: text("source_transcript"),
-  referenceImages: text("reference_images").array(), // keys de R2
+  referenceImages: text("reference_images").array(), // R2 keys
   performanceNotes: text("performance_notes"),
   status: text("status").default("active"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
