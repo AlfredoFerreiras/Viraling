@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { BuildNote } from "@/components/build-note";
 import { ExtractForm } from "@/components/extract-form";
 import { getCurrentUser } from "@/lib/auth";
 import { getServerDict } from "@/lib/i18n/server";
@@ -19,6 +20,15 @@ export default async function ExtractPage() {
       <ExtractForm
         niches={userNiches.map((n) => ({ id: n.id, name: n.name }))}
       />
+
+      <div className="mt-10">
+        <BuildNote
+          title={dict["note.extract.title"]}
+          tags={["Prompt injection", "Zod", "Claude API"]}
+        >
+          {dict["note.extract.desc"]}
+        </BuildNote>
+      </div>
     </main>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BuildNote } from "@/components/build-note";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { NicheDeleteButton } from "@/components/niche-delete-button";
 import { getCurrentUser } from "@/lib/auth";
@@ -63,6 +64,15 @@ export default async function NichesPage() {
           ))}
         </div>
       )}
+
+      <div className="mt-10">
+        <BuildNote
+          title={dict["note.niches.title"]}
+          tags={["Prompt design", "Zod"]}
+        >
+          {dict["note.niches.desc"]}
+        </BuildNote>
+      </div>
     </main>
   );
 }

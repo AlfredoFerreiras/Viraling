@@ -53,3 +53,6 @@ skills-lock.json
 
 # netlify
 .netlify
+
+# ...but the example file IS documentation and must ship
+!.env.example

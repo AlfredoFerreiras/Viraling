@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BuildNote } from "@/components/build-note";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { withDbContext } from "@/db/context";
 import { scripts } from "@/db/schema";
@@ -121,6 +122,15 @@ export default async function DashboardPage() {
           ))}
         </div>
       )}
+
+      <div className="mt-10">
+        <BuildNote
+          title={dict["note.dashboard.title"]}
+          tags={["Postgres RLS", "Ledger", "Drizzle"]}
+        >
+          {dict["note.dashboard.desc"]}
+        </BuildNote>
+      </div>
     </main>
   );
 }

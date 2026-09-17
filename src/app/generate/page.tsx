@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { BuildNote } from "@/components/build-note";
 import { GenerateForm } from "@/components/generate-form";
 import { getCurrentUser } from "@/lib/auth";
 import { getServerDict } from "@/lib/i18n/server";
@@ -24,6 +25,15 @@ export default async function GeneratePage() {
         activeNicheId={active!.id}
         tokensBalance={user.tokensBalance}
       />
+
+      <div className="mt-10">
+        <BuildNote
+          title={dict["note.generate.title"]}
+          tags={["Claude API", "Zod", "Transactions", "Rate limiting"]}
+        >
+          {dict["note.generate.desc"]}
+        </BuildNote>
+      </div>
     </main>
   );
 }

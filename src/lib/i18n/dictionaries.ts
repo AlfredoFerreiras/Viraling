@@ -235,6 +235,57 @@ const dict = {
   "footer.terms": "Terms & Conditions",
   "footer.privacy": "Privacy Policy",
   "footer.legal": "By creating an account you accept our Terms and Privacy Policy.",
+
+  // Demo entry (portfolio)
+  "demo.enter": "Explore the demo",
+  "demo.enterHint": "No signup. Opens a shared account with sample data.",
+  "demo.or": "or",
+  "demo.badge": "Portfolio demo",
+  "demo.signInNote": "Recruiters: skip this form. The button above opens a demo account that already has niches, scripts and credits.",
+
+  // Landing: how it was built
+  "built.title": "How this was built",
+  "built.subtitle": "A full stack SaaS, not a template. The parts worth looking at are the ones you cannot see from the screenshots.",
+  "built.rls.title": "Postgres row level security",
+  "built.rls.desc": "Every table has RLS enabled and forced. The app connects as a dedicated role without BYPASSRLS and sets the user id per transaction, so one user physically cannot read another user's rows. Route handlers check ownership again on top.",
+  "built.tokens.title": "Credit ledger with no bypass",
+  "built.tokens.desc": "Credits are debited inside the same transaction that writes the ledger row, with a conditional update that makes two simultaneous requests safe. If the AI call then fails, the credit is refunded. The balance is never written anywhere else in the code.",
+  "built.ai.title": "AI calls the user cannot steer",
+  "built.ai.desc": "The Anthropic key is server only, enforced at build time. System prompts are fixed on the server and every piece of user text is wrapped as delimited data with an explicit instruction to treat it as content, never instructions. Output is validated with Zod before it is stored.",
+  "built.limits.title": "Rate limiting that degrades safely",
+  "built.limits.desc": "Per user and per IP limits on the AI endpoints via Upstash Redis, falling back to an in memory window if Redis is unreachable. A provider outage weakens the limit but never takes the app down, because the hard spend ceiling is the credit ledger.",
+  "built.auth.title": "Hand rolled session auth",
+  "built.auth.desc": "Email and password with bcrypt. The cookie carries a random 256 bit token and the database stores only its SHA-256, so reading the sessions table does not let you forge a login. Sign in takes the same time whether or not the account exists.",
+  "built.pdf.title": "Server rendered PDF export",
+  "built.pdf.desc": "Every script exports as a production guide PDF, generated on demand server side with the same section colors and timings as the screen, and never stored.",
+
+  // Landing: stack
+  "stack.title": "Stack",
+  "stack.subtitle": "Chosen for the constraints, not the resume.",
+  "stack.next": "App Router, server components, route handlers",
+  "stack.ts": "Strict mode, no any in app code",
+  "stack.postgres": "Neon serverless, row level security",
+  "stack.drizzle": "Typed SQL, interactive transactions",
+  "stack.claude": "Script generation and format extraction",
+  "stack.zod": "Every request and every AI response",
+  "stack.tailwind": "Own component kit, no UI dependency",
+  "stack.upstash": "Distributed rate limiting",
+  "stack.netlify": "Deploy and scheduled functions",
+  "stack.vitest": "Unit tests, plus scripted security checks",
+
+  // In-app build notes
+  "note.dashboard.title": "How this was built",
+  "note.dashboard.desc": "Everything on this screen is scoped by Postgres row level security. The app sets your user id per transaction and the database filters the rows, so another account cannot read yours even with a hand crafted request. Credits come from an append only ledger, never from a counter.",
+  "note.generate.title": "What happens when you press generate",
+  "note.generate.desc": "Session check, then per user and per IP rate limits, then Zod on the input, then one credit debited inside a transaction. Only then does the server call Claude, with a fixed system prompt and your brand voice wrapped as delimited data. The response is validated against a Zod schema per content type before it is saved, and the credit is refunded if any of that fails.",
+  "note.history.title": "About these scripts",
+  "note.history.desc": "The demo account is seeded with one reel, one carousel and one story so this screen is never empty. They are written by hand rather than generated, so exploring the demo costs nothing. Generate a new one to see the real pipeline run.",
+  "note.niches.title": "Why the questionnaire",
+  "note.niches.desc": "The brand voice answers are what turn a generic viral format into something in your voice. They are passed to the model as delimited data, never as instructions, so nothing a user types can change how the generator behaves.",
+  "note.extract.title": "Prompt injection, handled",
+  "note.extract.desc": "This screen takes arbitrary text from a stranger and sends it to an LLM, which is the classic injection surface. The transcript is wrapped in delimiters with an explicit instruction to treat it as data, the system prompt is fixed server side, and the model is asked for JSON that is then validated with Zod.",
+  "note.admin.title": "Admin surface",
+  "note.admin.desc": "Role comes from the database, not the session token, and is checked in the layout and again in every admin route handler. The kill switch is a database flag: flip it and every AI endpoint returns 503 without touching Anthropic.",
 } as const;
 
 export type DictKey = keyof typeof dict;

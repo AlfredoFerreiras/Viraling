@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { DemoButton } from "./demo-button";
 import { useI18n } from "./i18n-provider";
 import { Button, Card, Input, Label, Spinner } from "./ui";
 
@@ -12,7 +13,13 @@ function safeNext(value: string | null): string {
   return value;
 }
 
-export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
+export function AuthForm({
+  mode,
+  demoEnabled = false,
+}: {
+  mode: "sign-in" | "sign-up";
+  demoEnabled?: boolean;
+}) {
   const { t } = useI18n();
   const router = useRouter();
   const params = useSearchParams();
@@ -63,6 +70,22 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
       <p className="mb-6 text-sm text-zinc-400">
         {isSignUp ? t("auth.signUpSubtitle") : t("auth.signInSubtitle")}
       </p>
+
+      {demoEnabled && (
+        <div className="mb-6">
+          <DemoButton />
+          <p className="mt-3 text-center text-xs leading-relaxed text-zinc-500">
+            {t("demo.signInNote")}
+          </p>
+          <div className="mt-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="text-xs uppercase tracking-wide text-zinc-600">
+              {t("demo.or")}
+            </span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+        </div>
+      )}
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div>

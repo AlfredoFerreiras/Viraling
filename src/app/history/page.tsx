@@ -1,6 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BuildNote } from "@/components/build-note";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { withDbContext } from "@/db/context";
 import { formats, scripts } from "@/db/schema";
@@ -76,6 +77,15 @@ export default async function HistoryPage() {
           ))}
         </div>
       )}
+
+      <div className="mt-10">
+        <BuildNote
+          title={dict["note.history.title"]}
+          tags={["Seed data", "Drizzle"]}
+        >
+          {dict["note.history.desc"]}
+        </BuildNote>
+      </div>
     </main>
   );
 }

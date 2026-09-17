@@ -4,11 +4,11 @@ AI script generator for short-form creators. A creator describes their niche onc
 
 **Live demo:** https://viraling.vercel.app
 
-Sign up for a free account (3 scripts a month, no card), or use the shared demo:
+**No signup needed.** The landing and sign-in pages both carry an **Explore the demo** button that opens a session on a shared account already loaded with a niche, three generated scripts and 60 credits. Nothing to type.
 
-| Email | Password |
-| --- | --- |
-| `demo@viraling.app` | `ViralingDemo2026!` |
+If you would rather sign in by hand, the same account is `demo@viraling.app` / `ViralingDemo2026!`, or you can create a free one (3 scripts a month, no card).
+
+Screens inside the app carry short notes explaining how the feature under them was built: the RLS scoping on the dashboard, the debit-then-call-then-refund sequence on the generator, the prompt injection handling on the extractor.
 
 ![Viraling landing page](docs/screenshots/landing.png)
 
@@ -123,6 +123,7 @@ Set these in the Netlify site's environment variables before the first build:
 | `ANTHROPIC_API_KEY` | Server only. Never exposed to the client |
 | `NEXT_PUBLIC_APP_URL` | The site's own URL. Drives the CORS allowlist in [src/proxy.ts](src/proxy.ts), so a wrong value makes the API reject every request with 403 |
 | `CRON_SECRET` | Shared by the scheduled function and the cron route |
+| `DEMO_EMAIL` | The shared demo account. Set it to enable the one click demo button; leave it empty and the demo route 404s and the buttons disappear |
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Optional. Without them rate limits fall back to per-instance memory |
 
 Two notes specific to Netlify:
